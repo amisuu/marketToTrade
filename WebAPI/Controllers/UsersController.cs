@@ -1,30 +1,28 @@
-﻿using Domain.Entities;
-using Infrastructure.Data;
-using Microsoft.AspNetCore.Http;
+﻿using Application;
+using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace WebAPI.Controllers
 {
     public class UsersController : BaseController
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUserService _userService;
 
-        public UsersController(ApplicationDbContext context)
+        public UsersController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
+        public async Task<IEnumerable<AppUser>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _userService.GetAllUsers();
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<AppUser>> GetUserById(int id)
+        public async Task<AppUser> GetUserById(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _userService.GetUserById(id);
         }
     }
 }
