@@ -7,7 +7,10 @@
     <ul class="navbar-nav me-auto mb-2 mb-md-0">
       <ng-container *ngIf="accountService.currentUser$ | async">
         <li class="nav-item">
-          <a class="nav-link" routerLink="/members" routerLinkActive="active">Trade</a>
+          <a class="nav-link" routerLink="/members" routerLinkActive="active">Members</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/assets" routerLinkActive="active">Assets</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/lists" routerLinkActive="active">Favourites</a>
@@ -17,14 +20,16 @@
         </li>
       </ng-container>
       <li class="nav-item">
-        <a class="nav-link" routerLink='/errors'routerLinkActive='active' >Errors</a>
+        <a class="nav-link" routerLink='/errors' routerLinkActive='active' >Errors</a>
     </li>
     </ul>
 
     <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
       <a class="dropdown-toggle text-light" dropdownToggle>Welcome {{user.username}}</a>
       <div class="dropdown-menu mt-3" *dropdownMenu>
-        <a class="dropdown-item">Edit profile</a>
+        <a class="dropdown-item" routerLink='/member/edit'>Edit profile</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" routerLink='/assets/edit'>Edit announcement</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" (click)="logout()">Logout</a>
       </div>

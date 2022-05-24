@@ -20,7 +20,7 @@ namespace Application.Services
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.NameId, user.UserName),
+                new Claim(JwtRegisteredClaimNames.NameId, user.Username),
             };
 
             var creds = new SigningCredentials(_key, SecurityAlgorithms.HmacSha256);
@@ -28,7 +28,7 @@ namespace Application.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(7),
+                Expires = DateTime.Now.AddDays(31),
                 SigningCredentials = creds
             };
 

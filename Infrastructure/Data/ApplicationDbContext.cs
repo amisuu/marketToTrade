@@ -10,5 +10,19 @@ namespace Infrastructure.Data
         }
 
         public DbSet<AppUser> Users { get; set; }
+        public DbSet<Asset> Assets { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Asset>()
+                .Property(u => u.IsReceipt)
+                .HasConversion<string>()
+                .HasMaxLength(3);
+
+            modelBuilder.Entity<Asset>()
+                .Property(u => u.IsOriginalPackage)
+                .HasConversion<string>()
+                .HasMaxLength(3);
+        }
     }
 }

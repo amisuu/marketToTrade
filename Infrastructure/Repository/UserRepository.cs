@@ -1,18 +1,23 @@
-﻿using Domain.Entities;
-using Domain.Interfaces;
+﻿using Application.DTOs;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
+using Domain.Interfaces;
+using Application.Interfaces;
 
 namespace Infrastructure.Repository
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : IUserRepository, IMemberRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
 
-        public UserRepository(ApplicationDbContext context)
+        public UserRepository(ApplicationDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<AppUser>> GetUsers()
@@ -27,7 +32,7 @@ namespace Infrastructure.Repository
 
         public async Task<AppUser> GetUserByUsername(string username)
         {
-            return await _context.Users.SingleOrDefaultAsync(u => u.UserName == username);
+            return await _context.Users.SingleOrDefaultAsync(u => u.Username == username);
         }
 
         public async Task<AppUser> Add(AppUser user)
@@ -40,7 +45,32 @@ namespace Infrastructure.Repository
 
         public async Task<bool> IsExists(string username)
         {
-            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
+            return await _context.Users.AnyAsync(x => x.Username == username.ToLower());
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<IEnumerable<MemberDto>> GetMembers()
+        {
+            return await _context.Users
+                            .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                            .ToListAsync();
+        }
+
+        public async Task<MemberDto> GetMemberByUsername(string username)
+        {
+            return await _context.Users
+                            .Where(u => u.Username == username)
+                            .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
+                            .SingleOrDefaultAsync();
+        }
+
+        public void Update(AppUser user)
+        {
+            _context.Entry(user).State = EntityState.Modified;
         }
     }
 }

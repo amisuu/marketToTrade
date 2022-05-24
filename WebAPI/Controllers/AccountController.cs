@@ -2,7 +2,6 @@
 using Application.DTOs;
 using Application.Interfaces;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
 using System.Text;
@@ -32,7 +31,7 @@ namespace WebAPI.Controllers
 
             var user = new AppUser
             {
-                UserName = registerDto.Username.ToLower(),
+                Username = registerDto.Username.ToLower(),
                 PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
                 PasswordSalt = hmac.Key
             };
@@ -40,7 +39,7 @@ namespace WebAPI.Controllers
             await _userService.AddUser(user);
             return new UserDto
             {
-                Username = user.UserName,
+                Username = user.Username,
                 Token = _tokenService.CreateToken(user)
             };
         }
@@ -69,7 +68,7 @@ namespace WebAPI.Controllers
 
             return new UserDto
             {
-                Username = user.UserName,
+                Username = user.Username,
                 Token = _tokenService.CreateToken(user)
             };
         }

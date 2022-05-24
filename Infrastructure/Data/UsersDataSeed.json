@@ -1,0 +1,82 @@
+[
+    {
+      "UserName": "Inwestor123",
+      "KnownAs": "DobryInwestor",
+      "Created": "2020-06-24",
+      "LastActive": "2020-06-21",
+      "Phone": 473829110,
+      "Email": "inwestor@gmail.com"
+    },
+    {
+      "UserName": "Wujek",
+      "KnownAs": "U Wujka",
+      "Created": "2019-03-13",
+      "LastActive": "2020-12-30",
+      "Phone": 902339442,
+      "Email": "wujaszek321@gmail.com"
+    },
+    {
+      "UserName": "mareczek",
+      "KnownAs": "Mark",
+      "Created": "2020-04-22",
+      "LastActive": "2021-12-23",
+      "Phone": 892202010,
+      "Email": "mark.gold@onet.pl"
+    },
+    {
+      "UserName": "Andrzej",
+      "KnownAs": "Przedsiebiorca Trader",
+      "Created": "2019-08-18",
+      "LastActive": "2021-09-12",
+      "Phone": 530213002,
+      "Email": "andrzej1442@gmail.com"
+    },
+    {
+      "UserName": "Trader333",
+      "KnownAs": "Gold Man",
+      "Created": "2019-09-03",
+      "LastActive": "2021-12-31",
+      "Phone": 439021001,
+      "Email": "trader333@gmail.com"
+    },
+    {
+      "UserName": "tradeIsMyName",
+      "KnownAs": "Born to trade",
+      "Created": "2019-01-02",
+      "LastActive": "2021-12-31",
+      "Phone": 783302022,
+      "Email": "trading@gmail.com"
+    },
+    {
+      "UserName": "GoodPrice",
+      "KnownAs": "Good Prices",
+      "Created": "2019-01-22",
+      "LastActive": "2021-06-29",
+      "Phone": 768494030,
+      "Email": "goodprices@gmail.com"
+    },
+    {
+      "UserName": "MarkTwain",
+      "KnownAs": "MarkTwain",
+      "Created": "2019-03-11",
+      "LastActive": "2021-09-21",
+      "Phone": 893020222,
+      "Email": "markTwain122@gmail.com"
+    },
+    {
+      "UserName": "Johnson",
+      "KnownAs": "Will",
+      "Created": "2020-07-30",
+      "LastActive": "2021-11-29",
+      "Phone": 983302323,
+      "Email": "will.johnson@gmail.com"
+    },
+    {
+      "UserName": "WakeUp",
+      "KnownAs": "Wake Up",
+      "Created": "2019-02-03",
+      "LastActive": "2021-11-21",
+      "Phone": 748392293,
+      "Email": "wakeUp@gmail.com"
+    }
+  ]

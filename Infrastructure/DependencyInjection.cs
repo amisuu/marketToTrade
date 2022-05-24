@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using Application.Interfaces;
+using Domain.Interfaces;
 using Infrastructure.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -11,6 +12,8 @@ namespace Domain
             services.AddScoped<IUserRepository, UserRepository>();
             //services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IErrorRepository, ErrorRepository>();
+            services.AddScoped<IMemberRepository, UserRepository>();
+            services.AddScoped<IAssetRepository, AssetRepository>();
 
             return services;
         }
