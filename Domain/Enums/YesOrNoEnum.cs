@@ -7,6 +7,6 @@ namespace Domain.Enums
         [Display(Name = "Yes")]
         Yes,
         [Display(Name = "No")]
-        No
+        No,
     }
 }

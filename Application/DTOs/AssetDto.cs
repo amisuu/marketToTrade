@@ -1,4 +1,5 @@
-﻿using Domain.Enums;
+﻿using Domain.Entities;
+using Domain.Enums;
 
 namespace Application.DTOs
 {
@@ -17,7 +18,10 @@ namespace Application.DTOs
         public string Condition { get; set; }
         public YesOrNoEnum IsOriginalPackage { get; set; }
         public YesOrNoEnum IsReceipt { get; set; }
-        public DateTime PublicationDate { get; set; }
         public ICollection<PhotoDto> Photos { get; set; }
+        public AppUser AppUser { get; set; }
+        public int AppUserId { get; set; }
+        public ICollection<AssetLikeDto> LikedByUsers { get; set; }
+        public ICollection<AssetLikeDto> LikedAssets { get; set; }
     }
 }

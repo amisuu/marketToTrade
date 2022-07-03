@@ -16,4 +16,5 @@ export interface Metal {
   isReceipt: string;
   publicationDate: Date;
   photos: Photo[];
+  appUserId: number;
 }

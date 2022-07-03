@@ -50,5 +50,18 @@ namespace Infrastructure.Repository
 
             return photo;
         }
+
+        public void Update(Asset asset)
+        {
+            _context.Update(asset);
+            _context.SaveChanges();
+        }
+        
+        public async Task<IEnumerable<Asset>> GetUserAssets(int id)
+        {
+            var listOfAssets = await _context.Assets.Where(x => x.AppUserId == id).ToListAsync();
+
+            return listOfAssets;
+        }
     }
 }

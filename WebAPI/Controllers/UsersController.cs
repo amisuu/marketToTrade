@@ -1,8 +1,8 @@
 ﻿using Application;
 using Application.DTOs;
+using Application.Extensions;
+using Application.Helpers;
 using Application.Interfaces;
-using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -21,9 +21,15 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers()
+        public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery]UserParams userParams)
         {
-            var users = await _memberRepository.GetMembers();
+            var user = await _userService.GetUserByUsername(User.GetUsername());
+            userParams.CurrentUsername = user.Username;
+            userParams.KnownAs = user.KnownAs;
+
+            var users = await _userService.GetMembers(userParams);
+
+            Response.AddPaginationHeader(users.CurrentPage, users.PageSize, users.TotalCount, users.TotalPages);
 
             return Ok(users);
         }
@@ -43,7 +49,7 @@ namespace WebAPI.Controllers
         [HttpPut]
         public async Task<ActionResult> UpdateUser(UpdateMemberDto memberDto)
         {
-            var currentUser = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var currentUser = User.GetUsername();
 
             var user = await _userService.GetUserByUsername(currentUser);
 
@@ -53,11 +59,6 @@ namespace WebAPI.Controllers
             }
 
             return BadRequest("Failed to update user");
-        }
-
-        private string GetUsername()
-        {
-            return User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         }
     }
 }

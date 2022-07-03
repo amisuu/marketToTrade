@@ -1,4 +1,6 @@
-﻿namespace Application.DTOs
+﻿using Domain.Entities;
+
+namespace Application.DTOs
 {
     public class UpdateMemberDto
     {

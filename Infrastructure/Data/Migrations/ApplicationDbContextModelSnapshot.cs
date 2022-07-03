@@ -51,12 +51,12 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("Phone")
                         .HasColumnType("int");
 
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Asset", b =>
@@ -67,7 +67,16 @@ namespace Infrastructure.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Condition")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Fineness")
@@ -89,7 +98,16 @@ namespace Infrastructure.Data.Migrations
                     b.Property<string>("Mass")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhotoUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Price")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PricePerOZ")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PriceSPOT")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Producer")
@@ -101,6 +119,9 @@ namespace Infrastructure.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Type")
                         .HasColumnType("nvarchar(max)");
 
@@ -109,7 +130,24 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Assets");
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("Assets", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.AssetLike", b =>
+                {
+                    b.Property<int>("SourceAssetId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("LikedAssetId")
+                        .HasColumnType("int");
+
+                    b.HasKey("SourceAssetId", "LikedAssetId");
+
+                    b.HasIndex("LikedAssetId");
+
+                    b.ToTable("Likes", (string)null);
                 });
 
             modelBuilder.Entity("Domain.Entities.Photo", b =>
@@ -136,7 +174,37 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("AssetId");
 
-                    b.ToTable("Photos");
+                    b.ToTable("Photos", (string)null);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Asset", b =>
+                {
+                    b.HasOne("Domain.Entities.AppUser", "Users")
+                        .WithMany("Assets")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("Domain.Entities.AssetLike", b =>
+                {
+                    b.HasOne("Domain.Entities.Asset", "LikedAsset")
+                        .WithMany("LikedByUsers")
+                        .HasForeignKey("LikedAssetId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.Asset", "SourceAsset")
+                        .WithMany("LikedAssets")
+                        .HasForeignKey("SourceAssetId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("LikedAsset");
+
+                    b.Navigation("SourceAsset");
                 });
 
             modelBuilder.Entity("Domain.Entities.Photo", b =>
@@ -150,8 +218,17 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Asset");
                 });
 
+            modelBuilder.Entity("Domain.Entities.AppUser", b =>
+                {
+                    b.Navigation("Assets");
+                });
+
             modelBuilder.Entity("Domain.Entities.Asset", b =>
                 {
+                    b.Navigation("LikedAssets");
+
+                    b.Navigation("LikedByUsers");
+
                     b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618

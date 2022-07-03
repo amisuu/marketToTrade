@@ -16,6 +16,7 @@ namespace Application
             services.AddScoped<IErrorService, ErrorService>();
             services.AddScoped<IAssetService, AssetService>();
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<LogUserActivity>();
 
             services.AddAutoMapper(typeof(MapperConfig).Assembly);
 

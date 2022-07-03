@@ -14,6 +14,7 @@ namespace Domain
             services.AddScoped<IErrorRepository, ErrorRepository>();
             services.AddScoped<IMemberRepository, UserRepository>();
             services.AddScoped<IAssetRepository, AssetRepository>();
+            services.AddScoped<ILikesRepository, LikesRepository>();
 
             return services;
         }

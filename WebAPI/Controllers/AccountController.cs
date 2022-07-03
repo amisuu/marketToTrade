@@ -27,20 +27,21 @@ namespace WebAPI.Controllers
                 return BadRequest("Username is taken, choose other");
             }
 
+            var user = _userService.MapDtoToEntity(registerDto);
+
             using var hmac = new HMACSHA256();
 
-            var user = new AppUser
-            {
-                Username = registerDto.Username.ToLower(),
-                PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                PasswordSalt = hmac.Key
-            };
+            user.Username = registerDto.Username.ToLower();
+            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
+            user.PasswordSalt = hmac.Key;
 
             await _userService.AddUser(user);
             return new UserDto
             {
+                Id = user.Id,
                 Username = user.Username,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                KnownAs = user.KnownAs,
             };
         }
 
@@ -68,8 +69,10 @@ namespace WebAPI.Controllers
 
             return new UserDto
             {
+                Id = user.Id,
                 Username = user.Username,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                KnownAs = user.KnownAs,
             };
         }
 

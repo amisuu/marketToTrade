@@ -9,6 +9,7 @@ import { MemberDetailComponent } from './members/member-detail/member-detail.com
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MessagesComponent } from './messages/messages.component';
+import { AssetsAddComponent } from './userAssets/assets-add/assets-add.component';
 import { AssetsDetailComponent } from './userAssets/assets-detail/assets-detail.component';
 import { AssetsEditComponent } from './userAssets/assets-edit/assets-edit.component';
 import { AssetsListComponent } from './userAssets/assets-list/assets-list.component';
@@ -29,7 +30,8 @@ const routes: Routes = [
       {path: 'messages', component: MessagesComponent},
       {path: 'assets', component: AssetsListComponent},
       {path: 'assets/:id', component: AssetsDetailComponent},
-      {path: 'assets/edit', component: AssetsEditComponent},
+      {path: 'asset/edit', component: AssetsEditComponent},
+      {path: 'asset/add', component: AssetsAddComponent},
     ]
   },
   {path: 'errors', component: TestErrorsComponent},

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { take } from 'rxjs';
+import { Router } from '@angular/router';
+import { Observable, take } from 'rxjs';
 import { Metal } from 'src/app/_models/metal';
 import { AssetsService } from 'src/app/_services/assets.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-assets-list',
@@ -9,20 +11,19 @@ import { AssetsService } from 'src/app/_services/assets.service';
   styleUrls: ['./assets-list.component.css']
 })
 export class AssetsListComponent implements OnInit {
-  userAssets: Metal[];
+  userAssets$: Observable<Metal[]>;
   currentAsset: Metal;
+  baseUrl = environment.apiUrl;
 
-  constructor(private assetService: AssetsService) {
+  constructor(private assetService: AssetsService, private router: Router) {
     this.assetService.currentMetal$.pipe(take(1)).subscribe(asset => this.currentAsset = asset);
   }
 
   ngOnInit(): void {
-    this.loadMetals();
+    this.userAssets$ = this.assetService.getAssets();
   }
 
-  loadMetals() {
-    this.assetService.getAssets().subscribe(assets => {
-      this.userAssets = assets;
-    });
+  showAddForm() {
+    this.router.navigateByUrl('asset/add');
   }
 }

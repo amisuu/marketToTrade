@@ -1,9 +1,10 @@
 ﻿using Application.DTOs;
 using Application.Interfaces;
 using AutoMapper;
-using CloudinaryDotNet.Actions;
 using Domain.Entities;
 using Domain.Interfaces;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Application.Services
 {
@@ -17,11 +18,14 @@ namespace Application.Services
             _assetRepository = assetRepository;
             _mapper = mapper;
         }
-        public async Task<AssetDto> AddNewAsset(AssetDto userAsset)
+        public async Task<AddNewAssetDto> AddNewAsset(AddNewAssetDto userAsset)
         {
+            //var option = new JsonSerializerOptions();
+            //option.Converters.Add(new JsonStringEnumConverter());
+            //var dataResponse = JsonSerializer.Deserialize<AddNewAssetDto>(userAsset, option);
             var asset = await _assetRepository.Add(_mapper.Map<Asset>(userAsset));
 
-            return _mapper.Map<AssetDto>(asset);
+            return _mapper.Map<AddNewAssetDto>(asset);
         }
 
         public async Task<PhotoDto> AddPhoto(AssetDto assetDto, PhotoDto photoDto)
@@ -49,6 +53,26 @@ namespace Application.Services
         public PhotoDto MapPhotoToDto(Photo photo)
         {
             return _mapper.Map<PhotoDto>(photo);
+        }
+
+        public Asset MapAssetDtoToAsset(AssetDto assetDto)
+        {
+            return _mapper.Map<Asset>(assetDto);
+        }
+
+        public async Task UpdateAsset(UpdateAssetDto assetDto)
+        {
+            var asset = await _assetRepository.GetAssetById(assetDto.Id);
+            var assetToDB = _mapper.Map(assetDto, asset);
+
+            _assetRepository.Update(assetToDB);
+        }
+
+        public async Task<IEnumerable<AssetDto>> GetUserAssets(int id)
+        {
+            var listOfAssets = await _assetRepository.GetUserAssets(id);
+
+            return _mapper.Map<IEnumerable<AssetDto>>(listOfAssets);
         }
     }
 }

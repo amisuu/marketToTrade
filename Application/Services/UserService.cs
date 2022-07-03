@@ -3,8 +3,7 @@ using Domain.Entities;
 using AutoMapper;
 using Domain.Interfaces;
 using Application.Interfaces;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
+using Application.Helpers;
 
 namespace Application.Services
 {
@@ -51,11 +50,11 @@ namespace Application.Services
             return await _userRepository.IsExists(username);
         }
 
-        public async Task<IEnumerable<MemberDto>> GetMembers()
+        public async Task<PagedList<MemberDto>> GetMembers(UserParams userParams)
         {
-            var users = await _memberRepository.GetMembers();
+            var users = await _memberRepository.GetMembers(userParams);
 
-            return _mapper.Map<IEnumerable<MemberDto>>(users);
+            return users;
         }
 
         public async Task<MemberDto> GetMemberByUsername(string username)
@@ -70,12 +69,19 @@ namespace Application.Services
             _mapper.Map(memberDto, user);
 
             _userRepository.Update(user);
-            if (await _userRepository.SaveAllAsync())
-            {
-                return true;
-            }
+            await _userRepository.SaveAllAsync();
 
-            return false;
+            return true;
+        }
+
+        public AppUser MapDtoToEntity(RegisterDto registerDto)
+        {
+            return _mapper.Map<AppUser>(registerDto);
+        }
+
+        public async Task SaveAllAsync()
+        {
+            await _userRepository.SaveAllAsync();
         }
     }
 }

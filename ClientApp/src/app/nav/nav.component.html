@@ -25,11 +25,12 @@
     </ul>
 
     <div class="dropdown" *ngIf="(accountService.currentUser$ | async) as user" dropdown>
-      <a class="dropdown-toggle text-light" dropdownToggle>Welcome {{user.username}}</a>
+      <img src="{{'assets/user.png'}}" alt="{{user.username}}">
+      <a class="dropdown-toggle text-light" dropdownToggle>Welcome {{user.knownAs}}</a>
       <div class="dropdown-menu mt-3" *dropdownMenu>
         <a class="dropdown-item" routerLink='/member/edit'>Edit profile</a>
         <div class="dropdown-divider"></div>
-        <a class="dropdown-item" routerLink='/assets/edit'>Edit announcement</a>
+        <a class="dropdown-item" routerLink='/asset/edit'>Edit announcement</a>
         <div class="dropdown-divider"></div>
         <a class="dropdown-item" (click)="logout()">Logout</a>
       </div>

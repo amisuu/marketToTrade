@@ -9,5 +9,6 @@
         public DateTime LastActive { get; set; } 
         public int Phone { get; set; }
         public string Email { get; set; }
+        public ICollection<AssetDto> Assets { get; set; }
     }
 }

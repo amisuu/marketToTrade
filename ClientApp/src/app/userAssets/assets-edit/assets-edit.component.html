@@ -1,2 +1,32 @@
-<h1>kmssmk</h1>
+<div class="row">
+  <div *ngFor="let asset of assets" class="col-3">
+    <div class="card mb-4" *ngIf="asset.appUserId == user.id">
+      <div class="card-img-wrapper">
+        <img src="{{asset.photoUrl}}" alt="{{asset.type}}" class="card-img-top">
+      </div>
+      <div class="card-body p-1">
+        <ul class="list-inline asset-icons animate text-center">
+          <li class="list-inline-item"><button class="btn btn-primary" (click)="showForm()">
+              <i class="fa fa-edit"></i></button></li>
+        </ul>
+        <h6 class="card-title text-center mb-1"><i class="fa fa-user mr-2"></i>
+          {{asset.type}}
+        </h6>
+        <p class="card-text text-muted text-center">{{asset.id}}</p>
+        <p class="card-text text-muted text-center">{{asset.mass}}</p>
+      </div>
+    </div>
+  </div>
+</div>
 
+<div class="col-6">
+  <tabset class="asset-tabset" *ngIf="showFormFlag">
+    <tab heading="Edit details">
+
+    </tab>
+    <tab heading='Edit Photos'>
+        <p>Photo edit will go here</p>
+        <app-photo-editor [asset]="assets"></app-photo-editor>
+    </tab>
+  </tabset>
+</div>

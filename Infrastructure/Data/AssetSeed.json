@@ -11,6 +11,7 @@
     "Condition": "Perfect",
     "IsOriginalPackage": "Yes",
     "IsReceipt": "Yes",
+    "AppUserId": 2,
     "Photos": [
       {
         "Url": "https://www.independentmetals.pl/app/assets/offer/vcyjbTWUAuIW2EAWaXEY--pFuop3.jpg",
@@ -30,6 +31,7 @@
     "Condition": "Perfect",
     "IsOriginalPackage": "Yes",
     "IsReceipt": "No",
+    "AppUserId": 2,
     "Photos": [
       {
         "Url": "https://www.independentmetals.pl/app/assets/offer/Bm3Pgy9MT3TyiKEimGMbz4SJEy5x.jpg",
@@ -49,6 +51,7 @@
     "Condition": "Good",
     "IsOriginalPackage": "No",
     "IsReceipt": "Yes",
+    "AppUserId": 1,
     "Photos": [
       {
         "Url": "https://www.independentmetals.pl/app/assets/offer/Bm3Pgy9MT3TyiKEimGMbz4SJEy5x.jpg",
@@ -68,6 +71,7 @@
     "Condition": "Perfect",
     "IsOriginalPackage": "Yes",
     "IsReceipt": "Yes",
+    "AppUserId": 3,
     "Photos": [
       {
         "Url": "https://www.independentmetals.pl/app/assets/offer/SOovBMvN8wfxGJuDSMeUuslsTORN.jpg",
@@ -87,6 +91,7 @@
     "Condition": "Perfect",
     "IsOriginalPackage": "Yes",
     "IsReceipt": "Yes",
+    "AppUserId": 4,
     "Photos": [
       {
         "Url": "https://www.independentmetals.pl/app/assets/offer/Bl80N1L4815S3LX6YoxN9EaD2Rsm.jpg",

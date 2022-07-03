@@ -9,7 +9,7 @@ namespace Domain.Interfaces
         public Task<AppUser> GetUserByUsername(string username);
         public Task<AppUser> Add(AppUser user);
         public Task<bool> IsExists(string username);
-        public Task<bool> SaveAllAsync();
+        public Task SaveAllAsync();
         public void Update(AppUser user);
     }
 }

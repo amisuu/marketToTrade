@@ -1,6 +1,6 @@
 ﻿using Application.DTOs;
+using Application.Helpers;
 using Domain.Entities;
-using Microsoft.AspNetCore.Mvc;
 
 namespace Application
 {
@@ -11,6 +11,9 @@ namespace Application
         public Task<AppUser> GetUserByUsername(string username);
         public Task<AppUser> AddUser(AppUser user);
         public Task<bool> IsUserExists(string username);
+        public Task SaveAllAsync();
         public Task<bool> UpdateUser(UpdateMemberDto memberDto, AppUser user);
+        public AppUser MapDtoToEntity(RegisterDto registerDto);
+        public Task<PagedList<MemberDto>> GetMembers(UserParams userParams);
     }
 }
