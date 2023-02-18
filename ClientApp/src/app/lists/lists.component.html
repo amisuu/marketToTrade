@@ -1,0 +1,34 @@
+<div class="text-center mt-3">
+  <h2>{{predicate === 'liked' ? 'Assets I Like' : 'Members who like my assets'}}</h2>
+</div>
+
+<div class="container mt-3">
+  <div class="row">
+      <div class="btn-group" name="predicate">
+          <button class="btn btn-primary" btnRadio="liked"
+              [(ngModel)]="predicate" (click)="loadLikes()">Assets I Like</button>
+          <button class="btn btn-primary" btnRadio="likedBy"
+              [(ngModel)]="predicate" (click)="loadUsersWithLikes()">Members who like my assets</button>
+      </div>
+  </div>
+
+  <div class="row mt-3">
+      <div class="col-2" *ngFor="let asset of assets">
+          <app-assets-card [asset]="asset"></app-assets-card>
+      </div>
+  </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination">
+  <pagination [boundaryLinks]="true"
+              [totalItems]="pagination.totalItems"
+              [itemsPerPage]="pagination.itemsPerPage"
+              [(ngModel)]="pagination.currentPage"
+              (pageChanged)="pageChanged($event)"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;">
+  </pagination>
+</div>
+

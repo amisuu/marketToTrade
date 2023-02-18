@@ -1,0 +1,102 @@
+[
+  {
+    "Type": "Gold",
+    "Form": "Coin",
+    "Mass": "1 oz",
+    "Fineness": "999",
+    "Quantity": 1,
+    "Producer": "Mennica Skarbowa Spó³ka Akcyjna",
+    "Price": "8433 zl",
+    "Year": 2020,
+    "Condition": "Perfect",
+    "IsOriginalPackage": "Yes",
+    "IsReceipt": "Yes",
+    "AppUserId": 2,
+    "Photos": [
+      {
+        "Url": "https://www.independentmetals.pl/app/assets/offer/vcyjbTWUAuIW2EAWaXEY--pFuop3.jpg",
+        "IsMain": true
+      }
+    ]
+  },
+  {
+    "Type": "Silver",
+    "Form": "Coin",
+    "Mass": "1 oz",
+    "Fineness": "999,9",
+    "Quantity": 4,
+    "Producer": "Mennica Skarbowa Spó³ka Akcyjna",
+    "Price": "35905 zl",
+    "Year": 2018,
+    "Condition": "Perfect",
+    "IsOriginalPackage": "Yes",
+    "IsReceipt": "No",
+    "AppUserId": 2,
+    "Photos": [
+      {
+        "Url": "https://www.independentmetals.pl/app/assets/offer/Bm3Pgy9MT3TyiKEimGMbz4SJEy5x.jpg",
+        "IsMain": true
+      }
+    ]
+  },
+  {
+    "Type": "Silver",
+    "Form": "Coin",
+    "Mass": "1/2 oz",
+    "Fineness": "999,9",
+    "Quantity": 20,
+    "Producer": "Mennica Skarbowa Spó³ka Akcyjna",
+    "Price": "47399 zl",
+    "Year": 2017,
+    "Condition": "Good",
+    "IsOriginalPackage": "No",
+    "IsReceipt": "Yes",
+    "AppUserId": 1,
+    "Photos": [
+      {
+        "Url": "https://www.independentmetals.pl/app/assets/offer/Bm3Pgy9MT3TyiKEimGMbz4SJEy5x.jpg",
+        "IsMain": true
+      }
+    ]
+  },
+  {
+    "Type": "Gold",
+    "Form": "Coin",
+    "Mass": "1/4 oz",
+    "Fineness": "999,9",
+    "Quantity": 6,
+    "Producer": "Mennica Skarbowa Spó³ka Akcyjna",
+    "Price": "8533 zl",
+    "Year": 2021,
+    "Condition": "Perfect",
+    "IsOriginalPackage": "Yes",
+    "IsReceipt": "Yes",
+    "AppUserId": 3,
+    "Photos": [
+      {
+        "Url": "https://www.independentmetals.pl/app/assets/offer/SOovBMvN8wfxGJuDSMeUuslsTORN.jpg",
+        "IsMain": true
+      }
+    ]
+  },
+  {
+    "Type": "Gold",
+    "Form": "Bar",
+    "Mass": "1 oz",
+    "Fineness": "999,9",
+    "Quantity": 2,
+    "Producer": "Mennica Skarbowa Spó³ka Akcyjna",
+    "Price": "18000 zl",
+    "Year": 2015,
+    "Condition": "Perfect",
+    "IsOriginalPackage": "Yes",
+    "IsReceipt": "Yes",
+    "AppUserId": 4,
+    "Photos": [
+      {
+        "Url": "https://www.independentmetals.pl/app/assets/offer/Bl80N1L4815S3LX6YoxN9EaD2Rsm.jpg",
+        "IsMain": true
+      }
+    ]
+  }
+]

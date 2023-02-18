@@ -1,0 +1,55 @@
+<div class="row" *ngIf="member">
+  <div class="col-4">
+    <h1>Your profile:</h1>
+  </div>
+  <div class="col-8">
+    <div class="alert alert-info" *ngIf="editForm.dirty">
+      <strong>Information: </strong>You have made changes. Any unsaved changes will be lost.
+    </div>
+  </div>
+  <div class="col-4">
+      <div class="card">
+          <img src="{{'assets/user.png'}}" alt="{{member?.knownAs}}"
+              class="card-img-top img-thumbnail">
+          <div class="card-body me-4">
+              <div>
+                  <strong>Last Active:</strong>
+                  <p>{{member.lastActive | timeago}}</p>
+              </div>
+              <div>
+                  <strong>Member since:</strong>
+                  <p>{{member.created | date: 'dd MMM yyyy'}}</p>
+              </div>
+              <div>
+                <strong>Phone number:</strong>
+                <p>{{member.phone}}</p>
+              </div>
+              <div>
+                <strong>Email:</strong>
+                <p>{{member.email}}</p>
+              </div>
+          </div>
+          <div class="card-footer">
+            <button [disabled]="!editForm.dirty" form="editForm" type="submit" class="btn btn-success btn-block">Save Changes</button>
+          </div>
+      </div>
+  </div>
+  <div class="col-8">
+    <tabset class="member-tabset">
+      <tab heading="About {{member.knownAs}}">
+        <form #editForm="ngForm" id="editForm" (ngSubmit)="updateMember()">
+          <h4 class="mt-2">Known as: </h4>
+          <textarea class="form-control" [(ngModel)]="member.knownAs" name="knownAs" rows="6"></textarea>
+          <h4 class="mt-2">Phone number: </h4>
+          <textarea class="form-control" [(ngModel)]="member.phone" name="phone" rows="6"></textarea>
+          <h4 class="mt-2">Email: </h4>
+          <textarea class="form-control" [(ngModel)]="member.email" name="email" rows="6"></textarea>
+        </form>
+      </tab>
+      <tab heading="Edit Photos">
+        <p>Photo goes here</p>
+      </tab>
+    </tabset>
+  </div>
+</div>
+

@@ -1,0 +1,10 @@
+<div class="row">
+  <div>
+    <button class="btn btn-info mb-4 plus" (click)="showAddForm()"><i class="fa fa-plus fa-light"></i></button>
+  </div>
+</div>
+<div class="row">
+  <div *ngFor="let asset of userAssets$ | async" class="col-2">
+    <app-assets-card [asset]="asset"></app-assets-card>
+  </div>
+</div>

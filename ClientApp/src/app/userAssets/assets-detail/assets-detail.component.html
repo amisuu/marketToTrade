@@ -1,0 +1,81 @@
+<div class="row" *ngIf="metal">
+  <div class="col-4">
+      <div class="card">
+          <img class="card-img-top img-thumbnail" src="{{metal.photoUrl}}" alt="{{metal.producer}}" >
+          <div class="card-body">
+              <div>
+                  <strong>Location:</strong>
+                  <p>{{metal.form}}</p>
+              </div>
+          </div>
+          <div class="card-footer">
+              <div class="btn-group d-flex">
+                  <button class="btn btn-success">Message</button>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <div class="col-8">
+    <tabset class="asset-tabset">
+      <tab heading="Photos">
+        <ngx-gallery [options]="galleryOptions" [images]="galleryImages"
+                    style="display: inline-block; margin-bottom: 20px"></ngx-gallery>
+      </tab>
+      <tab heading="About">
+        <table>
+          <tbody>
+            <tr>
+              <th>Price:</th>
+              <td>{{metal.price}}</td>
+            </tr>
+            <tr>
+              <th>Type:</th>
+              <td>{{metal.type}}</td>
+            </tr>
+            <tr>
+              <th>Form:</th>
+              <td>{{metal.form}}</td>
+            </tr>
+            <tr>
+              <th>Mass:</th>
+              <td>{{metal.mass}}</td>
+            </tr>
+            <tr>
+              <th>Fineness:</th>
+              <td>{{metal.fineness}}</td>
+            </tr>
+            <tr>
+              <th>Quantity:</th>
+              <td>{{metal.quantity}}</td>
+            </tr>
+            <tr>
+              <th>Producer:</th>
+              <td>{{metal.producer}}</td>
+            </tr>
+            <tr>
+              <th>Year:</th>
+              <td>{{metal.year}}</td>
+            </tr>
+            <tr>
+              <th>Condition:</th>
+              <td>{{metal.condition}}</td>
+            </tr>
+            <tr>
+              <th>OriginalPackage:</th>
+              <td>{{metal.isOriginalPackage ? "Yes" : "No" }}</td>
+            </tr>
+            <tr>
+              <th>Receipt:</th>
+              <td>{{metal.isReceipt ? "Yes" : "No" }} </td>
+            </tr>
+            <tr>
+              <th>PublicationDate:</th>
+              <td>{{metal.publicationDate | date : 'short'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </tab>
+    </tabset>
+  </div>
+</div>

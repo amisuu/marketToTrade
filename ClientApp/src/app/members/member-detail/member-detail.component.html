@@ -1,0 +1,31 @@
+<div class="row" *ngIf="member">
+  <div class="col-3">
+      <div class="card">
+          <img src="{{'assets/user.png'}}" alt="{{member?.knownAs}}"
+              class="card-img-top img-thumbnail">
+          <div class="card-body">
+              <div>
+                  <strong>Last Active:</strong>
+                  <p>{{member.lastActive | timeago}}</p>
+              </div>
+              <div>
+                  <strong>Member since:</strong>
+                  <p>{{member.created | date: 'dd MMM yyyy'}}</p>
+              </div>
+              <div>
+                <label>Phone number:</label>
+                <p>{{member.phone}}</p>
+              </div>
+              <div>
+                <label>Email:</label>
+                <p>{{member.email}}</p>
+              </div>
+          </div>
+          <div class="card-footer">
+              <div class="btn-group d-flex">
+                  <button class="btn btn-success">Message</button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

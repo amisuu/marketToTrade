@@ -1,0 +1,10 @@
+<div class="form-group mb-2">
+  <select [class.is-invalid]="ngControl.touched && ngControl.invalid"
+          name="isYesOrNo"
+          class="form-control"
+          [formControl]="ngControl.control">
+    <option *ngFor="let enumType of enumTypes" [value]="enumType" placeholder={{label}} type={{type}}>
+      {{enumType}}
+    </option>
+  </select>
+</div>
