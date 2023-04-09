@@ -33,6 +33,7 @@ import { AssetsAddComponent } from './userAssets/assets-add/assets-add.component
 import { YesNoSelectComponent } from './_forms/yes-no-select/yes-no-select.component';
 import {MatSelectModule} from '@angular/material/select';
 import { CommonModule } from '@angular/common';
+import { PhotoEditorMemberComponent } from './members/photo-editor-member/photo-editor-member.component';
 
 
 @NgModule({
@@ -57,7 +58,8 @@ import { CommonModule } from '@angular/common';
     PhotoEditorComponent,
     TextInputComponent,
     AssetsAddComponent,
-    YesNoSelectComponent
+    YesNoSelectComponent,
+    PhotoEditorMemberComponent
   ],
   imports: [
     BrowserModule,

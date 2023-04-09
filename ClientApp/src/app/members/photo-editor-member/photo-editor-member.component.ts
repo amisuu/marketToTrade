@@ -6,18 +6,17 @@ import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
 import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
-import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-photo-editor',
-  templateUrl: './photo-editor.component.html',
-  styleUrls: ['./photo-editor.component.css']
+  selector: 'app-photo-editor-member',
+  templateUrl: './photo-editor-member.component.html',
+  styleUrls: ['./photo-editor-member.component.css']
 })
-export class PhotoEditorComponent implements OnInit {
+export class PhotoEditorMemberComponent implements OnInit {
   @Input() member: Member;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
-  hasAnotherDropZoneOver: boolean;
+  hasAnotherDropZoneOver = false;
   baseUrl = environment.apiUrl;
   user: User;
 
