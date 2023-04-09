@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { AssetsService } from 'src/app/_services/assets.service';
 import { Metal } from 'src/app/_models/metal';
 import { YesOrNo } from 'src/app/enum/yesOrNoEnum';
@@ -12,10 +12,10 @@ import { Router } from '@angular/router';
 })
 export class AssetsAddComponent implements OnInit {
   yesOrNo: YesOrNo;
-  addForm: FormGroup;
+  addForm: UntypedFormGroup;
   asset: Metal;
 
-  constructor(private fb: FormBuilder,
+  constructor(private fb: UntypedFormBuilder,
               private assetService: AssetsService,
               private router: Router) { }
 

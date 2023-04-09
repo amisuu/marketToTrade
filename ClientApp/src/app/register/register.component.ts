@@ -1,5 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, Validator, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, UntypedFormBuilder, FormControl, UntypedFormGroup, Validator, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { AccountService } from '../_services/account.service';
@@ -12,12 +12,12 @@ import { AccountService } from '../_services/account.service';
 export class RegisterComponent implements OnInit {
   @Output() cancelRegister = new EventEmitter(); // z register component do rodzica czyli home compo
   model: any = {};
-  registerForm: FormGroup;
+  registerForm: UntypedFormGroup;
   validationErrors: string[] = [];
 
   constructor(private accountService: AccountService,
               private toastr: ToastrService,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private router: Router) { }
 
   ngOnInit(): void {

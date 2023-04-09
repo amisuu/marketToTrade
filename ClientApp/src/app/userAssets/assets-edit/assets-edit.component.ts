@@ -1,5 +1,5 @@
 import { Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { UntypedFormBuilder, UntypedFormGroup, NgForm, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Observable, take } from 'rxjs';
 import { AssetParams } from 'src/app/_models/assetParams';
@@ -14,7 +14,7 @@ import { AssetsService } from 'src/app/_services/assets.service';
   styleUrls: ['./assets-edit.component.css']
 })
 export class AssetsEditComponent implements OnInit {
-  addForm: FormGroup;
+  addForm: UntypedFormGroup;
   assetParams: AssetParams;
   user: User;
   showFormFlag = false;
@@ -32,7 +32,7 @@ export class AssetsEditComponent implements OnInit {
 
   constructor(private assetService: AssetsService,
               private accountService: AccountService,
-              private fb: FormBuilder,
+              private fb: UntypedFormBuilder,
               private toastr: ToastrService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
     this.assetParams = this.assetService.getAssetParams();
