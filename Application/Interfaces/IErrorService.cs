@@ -5,9 +5,9 @@ namespace Application.Interfaces
 {
     public interface IErrorService
     {
-        public string GetSecret();
-        public ActionResult<string> GetBadRequest();
-        public Task<ActionResult<AppUser>> GetNotFound();
-        public Task<ActionResult<string>> GetServerError();
+        string GetSecret();
+        ActionResult<string> GetBadRequest();
+        Task<ActionResult<AppUser>> GetNotFound();
+        Task<ActionResult<string>> GetServerError();
     }
 }

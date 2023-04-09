@@ -1,9 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, ReplaySubject } from 'rxjs';
+import { map, of, ReplaySubject } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { AssetParams } from '../_models/assetParams';
 import { Metal } from '../_models/metal';
 import { PaginatedResult } from '../_models/pagination';
+import { UpdateMetal } from '../_models/updateMetal';
 import { User } from '../_models/user';
 
 @Injectable({
@@ -13,11 +15,33 @@ export class AssetsService {
   baseUrl = environment.apiUrl;
   private currentMetalSource = new ReplaySubject<Metal>(1);
   currentMetal$ = this.currentMetalSource.asObservable();
+  assetCache = new Map();
+  assetParams: AssetParams;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { 
+    this.assetParams = new AssetParams();
+  }
 
-  getAssets() {
-    return this.http.get<Metal[]>(this.baseUrl + 'assets');
+  getAssets(assetParams: AssetParams) {
+    var response = this.assetCache.get(Object.values(assetParams).join('-'));
+    if (response) {
+      return of(response);
+    }
+
+    let params = this.getPaginationHeaders(assetParams.pageNumber, assetParams.pageSize);
+
+    if (assetParams.search !== undefined) {
+      params = params.append('search', assetParams.search);
+    }
+    params = params.append('orderBy', assetParams.orderBy);
+
+    //return this.http.get<Metal[]>(this.baseUrl + 'assets');
+
+    return this.getPaginatedResult<Metal[]>(this.baseUrl + 'assets', params)
+        .pipe(map(response => {
+          this.assetCache.set(Object.values(assetParams).join('-'), response);
+          return response;
+        }));
   }
 
   getAsset(id: any) {
@@ -28,8 +52,8 @@ export class AssetsService {
     this.currentMetalSource.next(metal);
   }
 
-  updateAsset(asset: Metal) {
-    return this.http.put(this.baseUrl + 'assets', asset);
+  updateAsset(updateAsset: UpdateMetal) {
+    return this.http.put(this.baseUrl + 'assets/update-asset', updateAsset);
   }
 
   addLike(id: number) {
@@ -51,7 +75,7 @@ export class AssetsService {
   }
 
   getUserAssets(id: any) {
-    return this.http.get(this.baseUrl + 'assets/user-assets' + id);
+    return this.http.get(this.baseUrl + 'assets/user-assets/' + id);
   }
 
   setMainPhoto(photoId: number, id: any) {
@@ -60,6 +84,10 @@ export class AssetsService {
 
   addAsset(asset: Metal) {
     return this.http.post(this.baseUrl + 'assets/add-asset', asset);
+  }
+
+  getAssetParams() {
+    return this.assetParams;
   }
 
   private getPaginatedResult<T>(url, params) {

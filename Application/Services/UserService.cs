@@ -63,14 +63,16 @@ namespace Application.Services
             return _mapper.Map<MemberDto>(user);
         }
 
-        public async Task<bool> UpdateUser(UpdateMemberDto memberDto, AppUser user)
+        public async Task<bool> UpdateCurrentUser(UpdateMemberDto memberDto, string currentUser)
         {
+            var user = await _userRepository.GetUserByUsername(currentUser);
             _mapper.Map(memberDto, user);
 
             _userRepository.Update(user);
-            await _userRepository.SaveAllAsync();
+            if (await _userRepository.SaveAllAsync())
+                return true;
 
-            return true;
+            return false;
         }
 
         public AppUser MapDtoToEntity(RegisterDto registerDto)
@@ -81,9 +83,8 @@ namespace Application.Services
         public async Task<bool> SaveAllAsync()
         {
             if (await _userRepository.SaveAllAsync())
-            {
                 return true;
-            }
+
             return false;
         }
     }

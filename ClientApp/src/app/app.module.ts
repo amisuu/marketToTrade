@@ -32,6 +32,7 @@ import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { AssetsAddComponent } from './userAssets/assets-add/assets-add.component';
 import { YesNoSelectComponent } from './_forms/yes-no-select/yes-no-select.component';
 import {MatSelectModule} from '@angular/material/select';
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
@@ -67,7 +68,8 @@ import {MatSelectModule} from '@angular/material/select';
     SharedModule,
     NgxSpinnerModule,
     ReactiveFormsModule,
-    MatSelectModule
+    MatSelectModule,
+    CommonModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},

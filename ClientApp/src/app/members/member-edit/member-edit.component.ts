@@ -13,17 +13,19 @@ import { MembersService } from 'src/app/_services/members.service';
   styleUrls: ['./member-edit.component.css']
 })
 export class MemberEditComponent implements OnInit {
-  @ViewChild('editForm') editForm: NgForm;
   member: Member;
   user: User;
+
+  @ViewChild('editForm') editForm: NgForm | undefined;
   @HostListener('window:beforeunload', ['event']) unloadNotification($event: any) {
-    if (this.editForm.dirty) {
+    if (this.editForm?.dirty) {
       $event.returnValue = true;
     }
   }
 
   constructor(private memberService: MembersService,
-              private accountService: AccountService) {
+              private accountService: AccountService,
+              private toastr: ToastrService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user = user);
    }
 
@@ -37,4 +39,12 @@ export class MemberEditComponent implements OnInit {
     })
   }
 
+  updateMember() {
+    this.memberService.updateMember(this.editForm?.value).subscribe({
+      next: _ => {
+        this.toastr.success("Profile updated successfully");
+        this.editForm?.reset(this.member);
+      }
+    });
+  }
 }

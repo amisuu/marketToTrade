@@ -1,8 +1,10 @@
 ﻿using Application;
 using Application.DTOs;
+using Application.Extensions;
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Helpers;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -11,24 +13,25 @@ namespace WebAPI.Controllers
     public class AssetsController : BaseController
     {
         private readonly IAssetService _assetService;
-        private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
         private readonly IUserService _userService;
 
-        public AssetsController(IAssetService assetService, 
-                                IMapper mapper,
+        public AssetsController(IAssetService assetService,
                                 IPhotoService photoService,
                                 IUserService userService)
         {
             _assetService = assetService;
-            _mapper = mapper;
             _photoService = photoService;
             _userService = userService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssets()
+        public async Task<ActionResult<IEnumerable<AssetDto>>> GetAssets([FromQuery] AssetParams assetParams)
         {
+            var assets = await _assetService.GetPagedAssets(assetParams);
+
+            Response.AddPaginationHeader(assets.CurrentPage, assets.PageSize, assets.TotalCount, assets.TotalPages);
+
             return Ok(await _assetService.GetAllAssets());
         }
 
@@ -75,16 +78,13 @@ namespace WebAPI.Controllers
             return BadRequest("Problem adding photo");
         }
 
-        [HttpPut]
-        public async Task<ActionResult> UpdateAsset(UpdateAssetDto assetDto)
+        [HttpPut("update-asset")]
+        public async Task<ActionResult> UpdateAsset(UpdateAssetDto updateAssetDto)
         {
-            var asset = await _assetService.GetAssetById(assetDto.Id);
+            if (await _assetService.UpdateAsset(updateAssetDto))
+                return NoContent();
 
-            var mappedAsset = _assetService.MapAssetDtoToAsset(asset);
-
-            await _assetService.UpdateAsset(assetDto);
-
-            return NoContent();
+            return BadRequest("Failed to update advertisment");
         }
 
         [HttpGet("user-assets/{id}")]

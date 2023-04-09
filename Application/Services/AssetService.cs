@@ -2,9 +2,8 @@
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
+using Domain.Helpers;
 using Domain.Interfaces;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Application.Services
 {
@@ -12,11 +11,15 @@ namespace Application.Services
     {
         private readonly IAssetRepository _assetRepository;
         private readonly IMapper _mapper;
+        private readonly IPagedListRepository _pagedListRepository;
 
-        public AssetService(IAssetRepository assetRepository, IMapper mapper)
+        public AssetService(IAssetRepository assetRepository,
+                            IMapper mapper,
+                            IPagedListRepository pagedListRepository)
         {
             _assetRepository = assetRepository;
             _mapper = mapper;
+            _pagedListRepository = pagedListRepository;
         }
         public async Task<AddNewAssetDto> AddNewAsset(AddNewAssetDto userAsset)
         {
@@ -60,12 +63,16 @@ namespace Application.Services
             return _mapper.Map<Asset>(assetDto);
         }
 
-        public async Task UpdateAsset(UpdateAssetDto assetDto)
+        public async Task<bool> UpdateAsset(UpdateAssetDto updateAssetDto)
         {
-            var asset = await _assetRepository.GetAssetById(assetDto.Id);
-            var assetToDB = _mapper.Map(assetDto, asset);
+            var asset = await _assetRepository.GetAssetById2(updateAssetDto.Id);
+            _mapper.Map(updateAssetDto, asset);
 
-            _assetRepository.Update(assetToDB);
+            _assetRepository.Update(asset);
+            if (await _assetRepository.SaveAllAsync())
+                return true;
+
+            return false;
         }
 
         public async Task<IEnumerable<AssetDto>> GetUserAssets(int id)
@@ -73,6 +80,13 @@ namespace Application.Services
             var listOfAssets = await _assetRepository.GetUserAssets(id);
 
             return _mapper.Map<IEnumerable<AssetDto>>(listOfAssets);
+        }
+
+        public async Task<PagedList<AssetDto>> GetPagedAssets(AssetParams assetParams)
+        {
+            var assets = await _pagedListRepository.GetPagedAssets(assetParams);
+
+            return assets;
         }
     }
 }

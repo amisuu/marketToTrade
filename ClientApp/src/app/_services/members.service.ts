@@ -38,6 +38,17 @@ export class MembersService {
     return this.userParams;
   }
 
+  getMember(username: string) {
+    const member = [...this.memberCache.values()]
+      .reduce((arr, element) => arr.concat(element.result), [])
+      .find((member: Member) => member.username === username);
+    console.log(member);
+    if (member) {
+      return of(member);
+    }
+    return this.http.get<Member>(this.baseUrl + 'users/' + username);
+  }
+
   getMembers(userParams: UserParams) {
     var response = this.memberCache.get(Object.values(userParams).join('-'));
     if (response) {
@@ -56,6 +67,10 @@ export class MembersService {
           this.memberCache.set(Object.values(userParams).join('-'), response);
           return response;
         }));
+  }
+
+  updateMember(member: Member) {
+    return this.http.put(this.baseUrl + 'users', member);
   }
 
   private getPaginatedResult<T>(url, params) {
@@ -78,35 +93,5 @@ export class MembersService {
     params = params.append('pageSize', pageSize.toString());
 
     return params;
-  }
-
-  getMember(username: string) {
-    const member = [...this.memberCache.values()]
-      .reduce((arr, element) => arr.concat(element.result), [])
-      .find((member: Member) => member.username === username);
-
-    if (member) {
-      return of(member);
-    }
-    return this.http.get<Member>(this.baseUrl + 'users/' + username);
-  }
-/*
-  getMember(username: string) {
-    const member = this.members.find(x => x.username === username);
-
-    if (member !== undefined) {
-      return of(member);
-    }
-
-    return this.http.get<Member>(this.baseUrl + 'users/' + username).pipe(
-      map(() => {
-       const index = this.members.indexOf(member);
-       this.members[index] = member;
-      })
-    );
-  }
-*/
-  updateMember(member: Member) {
-    return this.http.put(this.baseUrl + 'users', member);
   }
 }

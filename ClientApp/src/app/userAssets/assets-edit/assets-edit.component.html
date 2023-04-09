@@ -1,8 +1,7 @@
 <div class="row">
-
-  <div class="col-3">
-    <div *ngFor="let asset of userAsset" class="col-12">
-      <div class="card mb-4">
+  <div class="row">
+    <div *ngFor="let asset of userAsset">
+      <div class="card col-2 mb-4">
         <div class="card-img-wrapper">
           <img src="{{asset.photoUrl}}" alt="{{asset.type}}" class="card-img-top">
         </div>
@@ -18,36 +17,36 @@
           <p class="card-text text-muted text-center">{{asset.mass}}</p>
         </div>
       </div>
+      <div class="col-10">
+        <tabset class="asset-tabset" *ngIf="showFormFlag">
+          <div class="alert alert-info" *ngIf="editAssetForm.dirty">
+            <strong>Information: </strong>You have made changes. Any unsaved changes will be lost.
+          </div>
+          <tab heading="Edit details">
+            <form #editAssetForm="ngForm" id="editAssetForm" (ngSubmit)="updateAsset(asset.id)">
+              <input type="hidden" [(ngModel)]="asset.id" name="id" class="form-control mx-2 mb-2">
+              <input type="text" [(ngModel)]="asset.type" name="type" class="form-control mx-2 mb-2" placeholder="Type">
+              <input type="text" [(ngModel)]="asset.form" name="form" class="form-control mx-2 mb-2" placeholder="Form">
+              <input type="text" [(ngModel)]="asset.title" name="title" class="form-control mx-2 mb-2" placeholder="Title">
+              <input type="text" [(ngModel)]="asset.mass" name="mass" class="form-control mx-2 mb-2" placeholder="Mass">
+              <input type="text" [(ngModel)]="asset.fineness" name="fineness" class="form-control mx-2 mb-2" placeholder="Fineness">
+              <input type="text" [(ngModel)]="asset.quantity" name="quantity" class="form-control mx-2 mb-2" placeholder="Quantity">
+              <input type="text" [(ngModel)]="asset.producer" name="producer" class="form-control mx-2 mb-2" placeholder="Producer">
+              <input type="text" [(ngModel)]="asset.price" name="price" class="form-control mx-2 mb-2" placeholder="Price">
+              <input type="text" [(ngModel)]="asset.year" name="year" class="form-control mx-2 mb-2" placeholder="Year">
+              <input type="text" [(ngModel)]="asset.condition" name="condition" class="form-control mx-2 mb-2" placeholder="Condition">
+            </form>
+          </tab>
+          <tab heading='Edit Photos'>
+              <p>Photo edit will go here</p>
+              <!--<app-photo-editor [asset]="assets"></app-photo-editor>-->
+          </tab>
+          <div class="mt-2">
+            <button [disabled]="!editAssetForm.dirty" form="editAssetForm" type="submit" class="btn btn-success btn-block">Save changes</button>
+          </div>
+        </tabset>
+      </div>
     </div>
-  </div>
-
-  <div class="col-9">
-    <tabset class="asset-tabset" *ngIf="showFormFlag">
-      <div class="alert alert-info" *ngIf="editForm.dirty">
-        <strong>Information: </strong>You have made changes. Any unsaved changes will be lost.
-      </div>
-      <tab heading="Edit details">
-        <form #editForm="ngForm" id="editForm" (ngSubmit)="updateAsset()">
-          <input type="text" [(ngModel)]="asset.type" name="type" class="form-control mx-2 mb-2" placeholder="Type">
-          <input type="text" [(ngModel)]="asset.form" name="form" class="form-control mx-2 mb-2" placeholder="Form">
-          <input type="text" [(ngModel)]="asset.title" name="title" class="form-control mx-2 mb-2" placeholder="Title">
-          <input type="text" [(ngModel)]="asset.mass" name="mass" class="form-control mx-2 mb-2" placeholder="Mass">
-          <input type="text" [(ngModel)]="asset.fineness" name="fineness" class="form-control mx-2 mb-2" placeholder="Fineness">
-          <input type="text" [(ngModel)]="asset.quantity" name="quantity" class="form-control mx-2 mb-2" placeholder="Quantity">
-          <input type="text" [(ngModel)]="asset.producer" name="producer" class="form-control mx-2 mb-2" placeholder="Producer">
-          <input type="text" [(ngModel)]="asset.price" name="price" class="form-control mx-2 mb-2" placeholder="Price">
-          <input type="text" [(ngModel)]="asset.year" name="year" class="form-control mx-2 mb-2" placeholder="Year">
-          <input type="text" [(ngModel)]="asset.condition" name="condition" class="form-control mx-2 mb-2" placeholder="Condition">
-        </form>
-      </tab>
-      <tab heading='Edit Photos'>
-          <p>Photo edit will go here</p>
-          <app-photo-editor [asset]="assets"></app-photo-editor>
-      </tab>
-      <div class="mt-2">
-        <button [disabled]="!editForm.dirty" form="editForm" type="submit" class="btn btn-success btn-block">Save changes</button>
-      </div>
-    </tabset>
   </div>
 
 </div>

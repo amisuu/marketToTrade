@@ -1,7 +1,10 @@
-﻿using Application.Helpers;
+﻿using Application.DTOs;
+using Application.Helpers;
 using Application.Interfaces;
+using AutoMapper;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
@@ -10,7 +13,10 @@ namespace Application.Services
     internal class PhotoService : IPhotoService
     {
         public readonly Cloudinary _cloudinary;
-        public PhotoService(IOptions<CloudinarySettings> config)
+        private readonly IMapper _mapper;
+
+        public PhotoService(IOptions<CloudinarySettings> config,
+                            IMapper mapper)
         {
             var account = new Account
             (
@@ -20,6 +26,7 @@ namespace Application.Services
             );
 
             _cloudinary = new Cloudinary(account);
+            _mapper = mapper;
         }
         public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         {
@@ -43,9 +50,23 @@ namespace Application.Services
         {
             var deleteParams = new DeletionParams(publicId);
 
-            var result = await _cloudinary.DestroyAsync(deleteParams);
+            return await _cloudinary.DestroyAsync(deleteParams);
+        }
 
-            return result;
+        public async Task<PhotoDto> GetNewPhotoResult(ImageUploadResult result, AppUser user)
+        {
+            var photoDto = new PhotoDto
+            {
+                Url = result.SecureUrl.AbsoluteUri,
+                PublicId = result.PublicId,
+            };
+
+            if (user.Photos.Count == 0)
+                photoDto.IsMain = true;
+
+            user.Photos.Add(_mapper.Map<Photo>(photoDto));
+
+            return photoDto;
         }
     }
 }

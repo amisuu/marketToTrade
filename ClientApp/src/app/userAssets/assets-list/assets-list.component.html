@@ -4,7 +4,20 @@
   </div>
 </div>
 <div class="row">
-  <div *ngFor="let asset of userAssets$ | async" class="col-2">
+  <div *ngFor="let asset of assets" class="col-2">
     <app-assets-card [asset]="asset"></app-assets-card>
   </div>
+</div>
+
+<div class="d-flex justify-content-center" *ngIf="pagination">
+  <pagination [boundaryLinks]="true"
+              [totalItems]="pagination.totalItems"
+              [itemsPerPage]="pagination.itemsPerPage"
+              [(ngModel)]="pagination.currentPage"
+              (pageChanged)="pageChanged($event)"
+              previousText="&lsaquo;"
+              nextText="&rsaquo;"
+              firstText="&laquo;"
+              lastText="&raquo;">
+  </pagination>
 </div>

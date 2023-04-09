@@ -3,13 +3,13 @@
     <h1>Your profile:</h1>
   </div>
   <div class="col-8">
-    <div class="alert alert-info" *ngIf="editForm.dirty">
+    <div class="alert alert-info pb-0" *ngIf="editForm.dirty">
       <strong>Information: </strong>You have made changes. Any unsaved changes will be lost.
     </div>
   </div>
   <div class="col-4">
-      <div class="card">
-          <img src="{{'assets/user.png'}}" alt="{{member?.knownAs}}"
+      <div class="card text-center">
+          <img src="{{member.photoUrl}}" alt="{{member?.knownAs}}"
               class="card-img-top img-thumbnail">
           <div class="card-body me-4">
               <div>
@@ -47,7 +47,7 @@
         </form>
       </tab>
       <tab heading="Edit Photos">
-        <p>Photo goes here</p>
+        <app-photo-editor [member]="member"></app-photo-editor>
       </tab>
     </tabset>
   </div>
