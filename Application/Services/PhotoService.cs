@@ -5,7 +5,9 @@ using AutoMapper;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Domain.Entities;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace Application.Services
@@ -14,9 +16,15 @@ namespace Application.Services
     {
         public readonly Cloudinary _cloudinary;
         private readonly IMapper _mapper;
+        private readonly IAssetRepository _assetRepository;
+        private readonly IAssetService _assetService;
+        private readonly ILogger<PhotoService> _logger;
 
         public PhotoService(IOptions<CloudinarySettings> config,
-                            IMapper mapper)
+                            IMapper mapper,
+                            IAssetRepository assetRepository,
+                            IAssetService assetService,
+                            ILogger<PhotoService> logger)
         {
             var account = new Account
             (
@@ -27,6 +35,9 @@ namespace Application.Services
 
             _cloudinary = new Cloudinary(account);
             _mapper = mapper;
+            _assetRepository = assetRepository;
+            _assetService = assetService;
+            _logger = logger;
         }
         public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
         {
@@ -46,14 +57,24 @@ namespace Application.Services
             return uploadResult;
         }
 
-        public async Task<DeletionResult> DeletePhotoAsync(string publicId)
+        public async Task<DeletionResult> DeletePhotoAsync(PhotoDto photoDto, AppUserDto userDto)
         {
-            var deleteParams = new DeletionParams(publicId);
+            var deleteParams = new DeletionParams(photoDto.PublicId);
+            
+            userDto.Photos.Remove(photoDto);
 
             return await _cloudinary.DestroyAsync(deleteParams);
         }
 
-        public async Task<PhotoDto> GetNewPhotoResult(ImageUploadResult result, AppUser user)
+        public async Task<DeletionResult> DeletePhotoAsync2(string publicId)
+        {
+            var deleteParams = new DeletionParams(publicId);
+
+
+            return await _cloudinary.DestroyAsync(deleteParams);
+        }
+
+        public async Task<PhotoDto> GetNewPhotoResult(ImageUploadResult result, AppUserDto user, AssetDto assetDto)
         {
             var photoDto = new PhotoDto
             {
@@ -61,10 +82,21 @@ namespace Application.Services
                 PublicId = result.PublicId,
             };
 
-            if (user.Photos.Count == 0)
-                photoDto.IsMain = true;
+            if (user != null)
+            {
+                if (user.Photos.Count == 0)
+                    photoDto.IsMain = true;
 
-            user.Photos.Add(_mapper.Map<Photo>(photoDto));
+                user.Photos.Add(photoDto);
+            }
+            else if (assetDto != null)
+            {
+                if (assetDto.Photos.Count == 0)
+                    photoDto.IsMain = true;
+
+                var asset = await _assetRepository.GetAssetById(assetDto.Id);
+                asset.Photos.Add(_mapper.Map<Photo>(photoDto));
+            }
 
             return photoDto;
         }

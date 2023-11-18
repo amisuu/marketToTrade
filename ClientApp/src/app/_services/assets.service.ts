@@ -7,6 +7,7 @@ import { Metal } from '../_models/metal';
 import { PaginatedResult } from '../_models/pagination';
 import { UpdateMetal } from '../_models/updateMetal';
 import { User } from '../_models/user';
+import { getPaginatedResult, getPaginationHeaders } from './pagination';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class AssetsService {
       return of(response);
     }
 
-    let params = this.getPaginationHeaders(assetParams.pageNumber, assetParams.pageSize);
+    let params = getPaginationHeaders(assetParams.pageNumber, assetParams.pageSize);
 
     if (assetParams.search !== undefined) {
       params = params.append('search', assetParams.search);
@@ -37,7 +38,7 @@ export class AssetsService {
 
     //return this.http.get<Metal[]>(this.baseUrl + 'assets');
 
-    return this.getPaginatedResult<Metal[]>(this.baseUrl + 'assets', params)
+    return getPaginatedResult<Metal[]>(this.baseUrl + 'assets', params, this.http)
         .pipe(map(response => {
           this.assetCache.set(Object.values(assetParams).join('-'), response);
           return response;
@@ -61,17 +62,17 @@ export class AssetsService {
   }
 
   getLikes(predicate: string, pageNumber, pageSize) {
-    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    let params = getPaginationHeaders(pageNumber, pageSize);
     params = params.append('predicate', predicate); //.append('id', id);
     ///this.http.get<Partial<Metal[]>>(this.baseUrl + 'likes?predicate=' + predicate, {params: params});
-    return this.getPaginatedResult<Partial<Metal[]>>(this.baseUrl + 'likes/assetLikes/liked', params);
+    return getPaginatedResult<Partial<Metal[]>>(this.baseUrl + 'likes/assetLikes/liked', params, this.http);
   }
 
   getUsersWithLikes(predicate: string, pageNumber, pageSize) {
-    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    let params = getPaginationHeaders(pageNumber, pageSize);
     params = params.append('predicate', predicate); //.append('id', id);
     ///this.http.get<Partial<Metal[]>>(this.baseUrl + 'likes?predicate=' + predicate, {params: params});
-    return this.getPaginatedResult<Partial<User[]>>(this.baseUrl + 'likes/usersWithLike/likedBy', params);
+    return getPaginatedResult<Partial<User[]>>(this.baseUrl + 'likes/usersWithLike/likedBy', params, this.http);
   }
 
   getUserAssets(id: any) {
@@ -88,27 +89,5 @@ export class AssetsService {
 
   getAssetParams() {
     return this.assetParams;
-  }
-
-  private getPaginatedResult<T>(url, params) {
-    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
-    return this.http.get<T>(url, { observe: 'response', params }).pipe(
-      map(response => {
-        paginatedResult.result = response.body;
-        if (response.headers.get('Pagination') !== null) {
-          paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
-        }
-        return paginatedResult;
-      })
-    );
-  }
-
-  private getPaginationHeaders(pageNumber: number, pageSize: number) {
-    let params = new HttpParams();
-
-    params = params.append('pageNumber', pageNumber.toString());
-    params = params.append('pageSize', pageSize.toString());
-
-    return params;
   }
 }

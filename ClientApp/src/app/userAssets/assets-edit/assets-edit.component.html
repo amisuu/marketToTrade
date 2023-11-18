@@ -39,7 +39,8 @@
           </tab>
           <tab heading='Edit Photos'>
               <p>Photo edit will go here</p>
-              <!--<app-photo-editor [asset]="assets"></app-photo-editor>-->
+              <app-photo-editor [asset]="asset"
+                                [user]="user"></app-photo-editor>
           </tab>
           <div class="mt-2">
             <button [disabled]="!editAssetForm.dirty" form="editAssetForm" type="submit" class="btn btn-success btn-block">Save changes</button>

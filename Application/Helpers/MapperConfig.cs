@@ -1,7 +1,6 @@
 ﻿using Application.DTOs;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Helpers;
 
 namespace Application.Helpers
 {
@@ -11,10 +10,15 @@ namespace Application.Helpers
         {
             CreateMap<AppUser, MemberDto>()
                 .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url));
-            CreateMap<UpdateMemberDto, AppUser>();
-            CreateMap<RegisterDto, AppUser>();
             CreateMap<Asset, AssetDto>()
                 .ForMember(dest => dest.PhotoUrl, opt => opt.MapFrom(src => src.Photos.FirstOrDefault(x => x.IsMain).Url));
+            CreateMap<Message, MessageDto>()
+                .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(src => src.Sender != null ? 
+                src.Sender.Photos.FirstOrDefault(x => x.IsMain).Url : null)) //In Entity there is no SenderPhotoUrl
+                .ForMember(dest => dest.ReceipientPhotoUrl, opt => opt.MapFrom(src => src.Receipient != null ?
+                src.Receipient.Photos.FirstOrDefault(x => x.IsMain).Url : null));
+            CreateMap<UpdateMemberDto, AppUser>();
+            CreateMap<RegisterDto, AppUser>();
             CreateMap<Photo, PhotoDto>();
             CreateMap<PhotoDto, Photo>();
             CreateMap<AssetDto, Asset>();

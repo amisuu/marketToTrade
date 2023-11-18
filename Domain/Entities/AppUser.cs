@@ -14,5 +14,7 @@
         public ICollection<Photo> Photos { get; set; }
         public ICollection<Asset> Assets { get; set; }
         public ICollection<AssetLike> LikedAssets { get; set; }
+        public ICollection<Message> MessagesSent { get; set; }
+        public ICollection<Message> MessagesReceived { get; set; }
     }
 }

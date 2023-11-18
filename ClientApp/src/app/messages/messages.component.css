@@ -1,0 +1,12 @@
+.img-circle {
+    max-height: 50px;
+}
+
+#snd {
+    text-align: center;
+}
+
+.btn-group .send-buttons {
+    margin: 5px;
+    border-radius: 10px;
+}

@@ -52,30 +52,34 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("add-photo")]
-        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file, int id)
+        public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file, [FromHeader] string id)
         {
-            var asset = await _assetService.GetAssetById(id);
+            var idToInt = int.Parse(id);
+
+            var asset = await _assetService.GetAssetById(idToInt);
 
             var result = await _photoService.AddPhotoAsync(file);
 
             if (result.Error != null)
-            {
                 return BadRequest(result.Error.Message);
-            }
 
-            var photo = new Photo
-            {
-                Url = result.SecureUrl.AbsoluteUri,
-                PublicId = result.PublicId,
-            };
+            var photoDto = await _photoService.GetNewPhotoResult(result, null, asset);
+            //var photoDto = new PhotoDto
+            //{
+            //    Url = result.SecureUrl.AbsoluteUri,
+            //    PublicId = result.PublicId,
+            //};
 
-            if (await _assetService.AddPhoto(asset, _assetService.MapPhotoToDto(photo)) != null)
+            //await _assetService.AddPhoto(asset, photoDto);
+
+            if (await _assetService.SaveAllAsync())
             {
-                return _assetService.MapPhotoToDto(photo);
+                return photoDto;
                 //return CreatedAtRoute("GetAsset", new {id = asset.Id}, _assetService.MapPhotoToDto(photo));
             }
 
             return BadRequest("Problem adding photo");
+            // return photoDto;
         }
 
         [HttpPut("update-asset")]

@@ -31,9 +31,10 @@ import { PhotoEditorComponent } from './userAssets/photo-editor/photo-editor.com
 import { TextInputComponent } from './_forms/text-input/text-input.component';
 import { AssetsAddComponent } from './userAssets/assets-add/assets-add.component';
 import { YesNoSelectComponent } from './_forms/yes-no-select/yes-no-select.component';
-import {MatSelectModule} from '@angular/material/select';
+import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy-select';
 import { CommonModule } from '@angular/common';
 import { PhotoEditorMemberComponent } from './members/photo-editor-member/photo-editor-member.component';
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 
 
 @NgModule({
@@ -43,9 +44,9 @@ import { PhotoEditorMemberComponent } from './members/photo-editor-member/photo-
     HomeComponent,
     RegisterComponent,
     MemberListComponent,
-    MemberDetailComponent,
     ListsComponent,
     MessagesComponent,
+    MemberDetailComponent,
     TestErrorsComponent,
     NotFoundComponent,
     ServerErrorComponent,
@@ -59,7 +60,8 @@ import { PhotoEditorMemberComponent } from './members/photo-editor-member/photo-
     TextInputComponent,
     AssetsAddComponent,
     YesNoSelectComponent,
-    PhotoEditorMemberComponent
+    PhotoEditorMemberComponent,
+    MemberMessagesComponent
   ],
   imports: [
     BrowserModule,

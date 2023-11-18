@@ -150,6 +150,50 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("Likes");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Message", b =>
+                {
+                    b.Property<int>("MessageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MessageId"), 1L, 1);
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateMessageRead")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateMessageSent")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("ReceipientDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("ReceipientId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ReceipientUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("SenderDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SenderUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("MessageId");
+
+                    b.HasIndex("ReceipientId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("Messages");
+                });
+
             modelBuilder.Entity("Domain.Entities.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -212,6 +256,25 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("SourceUser");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Message", b =>
+                {
+                    b.HasOne("Domain.Entities.AppUser", "Receipient")
+                        .WithMany("MessagesReceived")
+                        .HasForeignKey("ReceipientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entities.AppUser", "Sender")
+                        .WithMany("MessagesSent")
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Receipient");
+
+                    b.Navigation("Sender");
+                });
+
             modelBuilder.Entity("Domain.Entities.Photo", b =>
                 {
                     b.HasOne("Domain.Entities.AppUser", "AppUser")
@@ -234,6 +297,10 @@ namespace Infrastructure.Data.Migrations
                     b.Navigation("Assets");
 
                     b.Navigation("LikedAssets");
+
+                    b.Navigation("MessagesReceived");
+
+                    b.Navigation("MessagesSent");
 
                     b.Navigation("Photos");
                 });

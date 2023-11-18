@@ -32,7 +32,6 @@ export class AssetsListComponent implements OnInit {
   loadAssets() {
     this.assetService.getAssets(this.assetParams).subscribe(response => {
       this.assets = response.result;
-      console.log(response.result);
       this.pagination = response.pagination;
     });
   }

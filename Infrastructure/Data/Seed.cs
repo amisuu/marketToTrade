@@ -15,7 +15,7 @@ namespace Infrastructure.Data
                 return;
             }
 
-            var userData = await File.ReadAllTextAsync(Environment.GetEnvironmentVariable("Users_Seed_Address"));
+            var userData = await File.ReadAllTextAsync("D:\\Projekty\\marketToTrade\\Infrastructure\\Data\\UsersDataSeed.json");//Environment.GetEnvironmentVariable("Users_Seed_Address"));
             
             var users = JsonConvert.DeserializeObject<List<AppUser>>(userData);
 
@@ -24,7 +24,7 @@ namespace Infrastructure.Data
                 using var hmac = new HMACSHA256();
 
                 user.Username = user.Username.ToLower();
-                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(Environment.GetEnvironmentVariable("Password_User")));
+                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Qwerty123"));//Environment.GetEnvironmentVariable("Password_User")));
                 user.PasswordSalt = hmac.Key;
 
                 context.Users.Add(user);
@@ -40,7 +40,7 @@ namespace Infrastructure.Data
                 return;
             }
 
-            var assetData = await File.ReadAllTextAsync(Environment.GetEnvironmentVariable("Assets_Seed_Address"));
+            var assetData = await File.ReadAllTextAsync("D:\\Projekty\\marketToTrade\\Infrastructure\\Data\\AssetSeed.json");//Environment.GetEnvironmentVariable("Assets_Seed_Address"));
 
             var assets = JsonConvert.DeserializeObject<List<Asset>>(assetData);
 

@@ -31,7 +31,6 @@ export class ListsComponent implements OnInit {
   }
 
   loadLikes() {
-    console.log(this.user.id);
     this.assetsService.getLikes(this.predicate, this.pageNumber, this.pageSize).subscribe(response => {
       this.assets = response.result;
       this.pagination = response.pagination;
@@ -39,7 +38,6 @@ export class ListsComponent implements OnInit {
   }
 
   loadUsersWithLikes() {
-    console.log(this.user.id);
     this.assetsService.getUsersWithLikes(this.predicate, this.pageNumber, this.pageSize).subscribe(response => {
       this.userResponse = response.result;
       this.pagination = response.pagination;

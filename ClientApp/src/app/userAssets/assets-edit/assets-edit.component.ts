@@ -16,9 +16,9 @@ import { AssetsService } from 'src/app/_services/assets.service';
 export class AssetsEditComponent implements OnInit {
   addForm: UntypedFormGroup;
   assetParams: AssetParams;
-  user: User;
   showFormFlag = false;
   userAsset: Metal[] = [];
+  user: User;
 
   @Input() asset: Metal;
   @ViewChild('editAssetForm') editAssetForm: NgForm | undefined;

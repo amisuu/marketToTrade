@@ -13,14 +13,17 @@ namespace WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly IMemberRepository _memberRepository;
         private readonly IPhotoService _photoService;
+        private readonly ILogger<UsersController> _logger;
 
         public UsersController(IUserService userService,
                                IMemberRepository memberRepository,
-                               IPhotoService photoService)
+                               IPhotoService photoService,
+                               ILogger<UsersController> logger)
         {
             _userService = userService;
             _memberRepository = memberRepository;
             _photoService = photoService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -64,8 +67,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
             var currentUser = User.GetUsername();
-            var user = await _userService.GetUserByUsername(currentUser);
-
+            //var user = await _userService.GetUserByUsername(currentUser);
+            var user = new AppUserDto { Username = "inwestor123" };
             if (user == null)
                 return NotFound();
 
@@ -74,14 +77,53 @@ namespace WebAPI.Controllers
             if (result.Error != null)
                 return BadRequest(result.Error.Message);
 
-            var photoDto = await _photoService.GetNewPhotoResult(result, user);
+            var photoDto = await _photoService.GetNewPhotoResult(result, user, null);
 
             if (await _userService.SaveAllAsync())
             {
+                //return photoDto;
                 return CreatedAtAction(nameof(GetUserByUsername), new {username = user.Username}, photoDto);
             }
 
             return BadRequest("Problem adding photo");
+        }
+
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            var currentUser = User.GetUsername();
+            var user = await _userService.GetUserByUsername2(currentUser);
+
+            if (user == null)
+                return NoContent();
+
+            var photo = user.Photos.FirstOrDefault(u => u.Id == photoId);
+            _logger.LogInformation("PHOTO ID ============================================= " + photo.Id.ToString());
+            if (photo == null)
+                return NotFound();
+
+            if (photo.IsMain)
+                return BadRequest("Deleting main photo is prohibited.");
+
+            if (!string.IsNullOrEmpty(photo.PublicId))
+            {
+                var result = await _photoService.DeletePhotoAsync2(photo.PublicId);
+
+
+                user.Photos.Remove(photo);
+
+                if (result.Error != null)
+                    return BadRequest(result.Error.Message);
+            }
+            //await _userService.SaveAllAsync();
+            //return Ok();
+           // _logger.LogInformation(photo.PublicId.ToString());
+            if (await _userService.SaveAllAsync())
+                return Ok();
+
+            return BadRequest();
+           ////_logger.LogInformation("nie zapisało");
+            //return BadRequest("Problem with delete photo.");
         }
     }
 }

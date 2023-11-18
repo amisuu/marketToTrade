@@ -27,22 +27,7 @@ namespace WebAPI.Controllers
                 return BadRequest("Username is taken, choose other");
             }
 
-            var user = _userService.MapDtoToEntity(registerDto);
-
-            using var hmac = new HMACSHA256();
-
-            user.Username = registerDto.Username.ToLower();
-            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
-            user.PasswordSalt = hmac.Key;
-
-            await _userService.AddUser(user);
-            return new UserDto
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Token = _tokenService.CreateToken(user),
-                KnownAs = user.KnownAs,
-            };
+            return await _userService.RegisterUser(registerDto);
         }
 
         [HttpPost("login")]
@@ -51,29 +36,14 @@ namespace WebAPI.Controllers
             var user = await _userService.GetUserByUsername(loginDto.Username);
 
             if (user == null)
-            {
                 return Unauthorized("Invalid username");
-            }
 
-            using var hmac = new HMACSHA256(user.PasswordSalt);
+            var result = await _userService.LoginUser(loginDto);
 
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+            if (result == null)
+                return Unauthorized("Invalid password or username");
 
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != user.PasswordHash[i])
-                {
-                    return Unauthorized("Invalid password or username");
-                }
-            }
-
-            return new UserDto
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Token = _tokenService.CreateToken(user),
-                KnownAs = user.KnownAs,
-            };
+            return result;
         }
 
         private async Task<bool> IsExists(string username)

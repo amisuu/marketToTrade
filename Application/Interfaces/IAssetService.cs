@@ -10,10 +10,9 @@ namespace Application.Interfaces
         Task<AssetDto> GetAssetById(int id);
         Task<AddNewAssetDto> AddNewAsset(AddNewAssetDto user);
         Task<PhotoDto> AddPhoto(AssetDto asset, PhotoDto photo);
-        PhotoDto MapPhotoToDto(Photo photo);
-        Asset MapAssetDtoToAsset(AssetDto assetDto);
         Task<bool> UpdateAsset(UpdateAssetDto updateAssetDto);
         Task<IEnumerable<AssetDto>> GetUserAssets(int id);
         Task<PagedList<AssetDto>> GetPagedAssets(AssetParams assetParams);
+        Task<bool> SaveAllAsync();
     }
 }

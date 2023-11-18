@@ -12,6 +12,7 @@ namespace Infrastructure.Data
         public DbSet<AppUser> Users { get; set; }
         public DbSet<Asset> Assets { get; set; }
         public DbSet<AssetLike> Likes { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -28,7 +29,7 @@ namespace Infrastructure.Data
                 .HasMaxLength(3);
 
             modelBuilder.Entity<AssetLike>()
-                .HasKey(key => new {key.SourceUserId, key.LikedAssetId});
+                .HasKey(key => new { key.SourceUserId, key.LikedAssetId });
 
             modelBuilder.Entity<AssetLike>()
                 .HasOne(source => source.SourceUser)
@@ -53,6 +54,16 @@ namespace Infrastructure.Data
                 .WithMany(u => u.Photos)
                 .HasForeignKey(u => u.AppUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(s => s.Receipient)
+                .WithMany(m => m.MessagesReceived)
+                .OnDelete(DeleteBehavior.Restrict); //After user delete profile, message should stay for other person
+
+            modelBuilder.Entity<Message>()
+                .HasOne(s => s.Sender)
+                .WithMany(m => m.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

@@ -34,9 +34,10 @@ namespace Application.Services
         public async Task<PhotoDto> AddPhoto(AssetDto assetDto, PhotoDto photoDto)
         {
 
-            var photo = await _assetRepository.AddPhoto(_mapper.Map<Asset>(assetDto), _mapper.Map<Photo>(photoDto));
+            var asset = await _assetRepository.GetAssetById(assetDto.Id);
+            asset.Photos.Add(_mapper.Map<Photo>(photoDto));
 
-            return _mapper.Map<PhotoDto>(photo);
+            return photoDto;
         }
 
         public async Task<IEnumerable<AssetDto>> GetAllAssets()
@@ -51,16 +52,6 @@ namespace Application.Services
             var asset = await _assetRepository.GetAssetById(id);
 
             return _mapper.Map<AssetDto>(asset);
-        }
-
-        public PhotoDto MapPhotoToDto(Photo photo)
-        {
-            return _mapper.Map<PhotoDto>(photo);
-        }
-
-        public Asset MapAssetDtoToAsset(AssetDto assetDto)
-        {
-            return _mapper.Map<Asset>(assetDto);
         }
 
         public async Task<bool> UpdateAsset(UpdateAssetDto updateAssetDto)
@@ -87,6 +78,14 @@ namespace Application.Services
             var assets = await _pagedListRepository.GetPagedAssets(assetParams);
 
             return assets;
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            if (await _assetRepository.SaveAllAsync())
+                return true;
+
+            return false;
         }
     }
 }

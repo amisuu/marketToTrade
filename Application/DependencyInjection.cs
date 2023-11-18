@@ -17,6 +17,7 @@ namespace Application
             services.AddScoped<IAssetService, AssetService>();
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<ILikesService, LikesService>();
+            services.AddScoped<IMessagesService, MessagesService>();
             services.AddScoped<LogUserActivity>();
 
             services.AddAutoMapper(typeof(MapperConfig).Assembly);

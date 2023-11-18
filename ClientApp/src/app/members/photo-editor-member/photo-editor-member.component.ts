@@ -14,16 +14,15 @@ import { environment } from 'src/environments/environment';
 })
 export class PhotoEditorMemberComponent implements OnInit {
   @Input() member: Member;
+  @Input() user: User;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
   hasAnotherDropZoneOver = false;
   baseUrl = environment.apiUrl;
-  user: User;
+  token: string;
 
   constructor(private accountService: AccountService, 
-              private memberService: MembersService) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user == user);
-  }
+              private memberService: MembersService) {}
 
   ngOnInit(): void {
     this.initializeUploader();
@@ -50,7 +49,7 @@ export class PhotoEditorMemberComponent implements OnInit {
       autoUpload: false,
       maxFileSize: 10 * 1024 * 1024,
     });
-
+    
     this.uploader.onAfterAddingFile = (file) => {
       file.withCredentials = false;
     }
@@ -62,5 +61,16 @@ export class PhotoEditorMemberComponent implements OnInit {
         this.member.photos.push(photo);
       }
     }
+  }
+
+  deletePhoto(photoId: number){
+    this.memberService.deletePhoto(photoId).subscribe({
+      next: _ =>{
+        if(this.member)
+        {
+          this.member.photos = this.member.photos.filter(p => p.id !== photoId);
+        }
+      }
+   });
   }
 }

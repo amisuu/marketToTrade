@@ -7,6 +7,8 @@ import { PaginatedResult } from '../_models/pagination';
 import { UserParams } from '../_models/userParams';
 import { AccountService } from './account.service';
 import { User } from '../_models/user';
+import { getPaginatedResult, getPaginationHeaders } from './pagination';
+import { Message } from '../_models/message';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +44,7 @@ export class MembersService {
     const member = [...this.memberCache.values()]
       .reduce((arr, element) => arr.concat(element.result), [])
       .find((member: Member) => member.username === username);
-    console.log(member);
+    
     if (member) {
       return of(member);
     }
@@ -55,14 +57,14 @@ export class MembersService {
       return of(response);
     }
 
-    let params = this.getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
+    let params = getPaginationHeaders(userParams.pageNumber, userParams.pageSize);
 
     if (userParams.search !== undefined) {
       params = params.append('search', userParams.search);
     }
     params = params.append('orderBy', userParams.orderBy);
 
-    return this.getPaginatedResult<Member[]>(this.baseUrl + 'users', params)
+    return getPaginatedResult<Member[]>(this.baseUrl + 'users', params, this.http)
         .pipe(map(response => {
           this.memberCache.set(Object.values(userParams).join('-'), response);
           return response;
@@ -73,25 +75,7 @@ export class MembersService {
     return this.http.put(this.baseUrl + 'users', member);
   }
 
-  private getPaginatedResult<T>(url, params) {
-    const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
-    return this.http.get<T>(url, { observe: 'response', params }).pipe(
-      map(response => {
-        paginatedResult.result = response.body;
-        if (response.headers.get('Pagination') !== null) {
-          paginatedResult.pagination = JSON.parse(response.headers.get('Pagination'));
-        }
-        return paginatedResult;
-      })
-    );
-  }
-
-  private getPaginationHeaders(pageNumber: number, pageSize: number) {
-    let params = new HttpParams();
-
-    params = params.append('pageNumber', pageNumber.toString());
-    params = params.append('pageSize', pageSize.toString());
-
-    return params;
+  deletePhoto(photoId: number){
+    return this.http.delete(this.baseUrl + "users/delete-photo/" + photoId);
   }
 }

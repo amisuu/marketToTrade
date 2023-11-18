@@ -14,15 +14,13 @@ import { environment } from 'src/environments/environment';
 })
 export class PhotoEditorComponent implements OnInit {
   @Input() asset: Metal;
+  @Input() user: User;
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
-  hasAnotherDropZoneOver:boolean;
+  hasAnotherDropZoneOver = false;
   baseUrl = environment.apiUrl;
-  user: User;
 
-  constructor(private accountService: AccountService, private assetService: AssetsService) {
-    this.accountService.currentUser$.pipe(take(1)).subscribe(user => this.user == user);
-  }
+  constructor(private assetService: AssetsService) {}
 
   ngOnInit(): void {
     this.initializeUploader();
@@ -32,22 +30,24 @@ export class PhotoEditorComponent implements OnInit {
     this.hasBaseDropZoneOver = e;
   }
 
-  setMainPhoto(photoId, id) {
+  /*setMainPhoto(photoId, id) {
     this.assetService.setMainPhoto(photoId.id, id).subscribe(() => {
       this.asset.photoUrl = photoId.url;
       this.accountService.setCurrentUser(this.user);
     });
-  }
+  }*/
 
   initializeUploader() {
+    var idToString = this.asset.id.toString();
     this.uploader = new FileUploader({
-      url: this.baseUrl + 'asset/add-photo',
+      url: this.baseUrl + 'assets/add-photo',
       authToken: 'Bearer ' + this.user.token,
       isHTML5: true,
       allowedFileType: ['image'],
       removeAfterUpload: true,
       autoUpload: false,
       maxFileSize: 10 * 1024 * 1024,
+      headers: [{ name: 'id', value: idToString }]
     });
 
     this.uploader.onAfterAddingFile = (file) => {
