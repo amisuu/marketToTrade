@@ -97,8 +97,8 @@ StyleCopReport.xml
 *.pidb
 *.svclog
 *.scc
-*.appsettings.json
-*.appsettings.Development.json
+*/WebAPI/appsettings.json
+*/WebAPI/appsettings.Development.json
 *.package-lock.json
 *.package.json
 
