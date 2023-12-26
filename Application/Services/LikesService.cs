@@ -46,7 +46,7 @@ namespace Application.Services
 
             var likedUsers = users.Select(user => new UserDto
             {
-                Username = user.Username,
+                Username = user.UserName,
                 KnownAs = user.KnownAs
             });
 

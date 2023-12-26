@@ -11,13 +11,17 @@ namespace Infrastructure.Repository
     public class MessageRepository : IMessageRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly ILogger<MessagesController> _logger;
 
-        public MessageRepository(ApplicationDbContext context, ILogger<MessagesController> logger)
+        public MessageRepository(ApplicationDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
+
+        public void AddGroup(Group group)
+        {
+            _context.Groups.Add(group);
+        }
+
         public async Task AddMessage(Message message)
         {
             await _context.Messages.AddAsync(message);
@@ -30,15 +34,31 @@ namespace Infrastructure.Repository
             _context.Messages.Remove(message);
         }
 
+        public async Task<Connection> GetConnection(string connectionId)
+        {
+            return await _context.Connections.FindAsync(connectionId);
+        }
+
+        public async Task<Group> GetGroupForConnection(string connectionId)
+        {
+            return await _context.Groups.Include(x => x.Connections)
+                                        .Where(x => x.Connections.Any(c => c.ConnectionId == connectionId))
+                                        .FirstOrDefaultAsync();
+        }
+
         public async Task<Message> GetMessage(int id)
         {
             return await _context.Messages.FindAsync(id);
         }
 
+        public async Task<Group> GetMessageGroup(string groupName)
+        {
+            return await _context.Groups.Include(x => x.Connections).FirstOrDefaultAsync(x => x.Name == groupName);
+        }
+
         public IQueryable<Message> GetMessagesForUser(MessagesParams messagesParams)
         {
-            var query = _context.Messages.OrderByDescending(m => m.DateMessageSent)
-                                               .AsQueryable();
+            var query = _context.Messages.OrderByDescending(m => m.DateMessageSent).AsQueryable();
 
             query = messagesParams.Container switch
             {
@@ -82,6 +102,11 @@ namespace Infrastructure.Repository
             }
 
             return messages;
+        }
+
+        public void RemoveConnection(Connection connection)
+        {
+            _context.Connections.Remove(connection);
         }
 
         public async Task<bool> SaveAllAsync()

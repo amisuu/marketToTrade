@@ -6,8 +6,6 @@ namespace Application
 {
     public interface IUserService
     {
-        Task<UserDto> RegisterUser(RegisterDto registerDto);
-        Task<UserDto> LoginUser(LoginDto loginDto);
         Task<IEnumerable<MemberDto>> GetAllUsers();
         Task<MemberDto> GetUserById(int id);
         Task<AppUser> GetUserByUsername(string username);
@@ -18,5 +16,6 @@ namespace Application
         Task<bool> UpdateCurrentUser(UpdateMemberDto memberDto, string currentUser);
         AppUser MapDtoToEntity(RegisterDto registerDto);
         Task<PagedList<MemberDto>> GetMembers(UserParams userParams);
+        AppUser RegisterUser(RegisterDto registerDto);
     }
 }

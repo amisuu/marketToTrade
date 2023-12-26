@@ -10,7 +10,6 @@ namespace Domain
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
             services.AddScoped<IUserRepository, UserRepository>();
-            //services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IErrorRepository, ErrorRepository>();
             services.AddScoped<IMemberRepository, UserRepository>();
             services.AddScoped<IAssetRepository, AssetRepository>();

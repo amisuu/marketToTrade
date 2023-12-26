@@ -38,7 +38,7 @@ namespace WebAPI.Controllers
             {
                 if (item.Id == likedAsset.Id)
                 {
-                    return BadRequest("You cannot like your items");
+                    return BadRequest("You cannot like your items.");
                 }
             }
 
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
 
             if (assetLike != null)
             {
-                return BadRequest("You already like this asset");
+                return BadRequest("You already liked this.");
             }
 
             assetLike = new AssetLikeDto

@@ -17,6 +17,8 @@ import { AuthGuard } from './_guards/auth.guard';
 import { PreventUnsavedChangesAssetGuard } from './_guards/prevent-unsaved-changes-asset.guard';
 import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
 import { MemberDetailedResolver } from './_resolvers/member-detailed.resolver';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { adminGuard } from './_guards/admin.guard';
 
 const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -34,6 +36,7 @@ const routes: Routes = [
       {path: 'assets/:id', component: AssetsDetailComponent},
       {path: 'asset/edit', component: AssetsEditComponent, canDeactivate: [PreventUnsavedChangesAssetGuard]},
       {path: 'asset/add', component: AssetsAddComponent},
+      {path: 'admin', component: AdminPanelComponent, canActivate: [adminGuard]}
     ]
   },
   {path: 'errors', component: TestErrorsComponent},

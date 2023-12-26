@@ -1,10 +1,12 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext
-    {
+    public class ApplicationDbContext : IdentityDbContext<AppUser, AppRole, int, IdentityUserClaim<int>, AppUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
+    {//ponieważ dodawana jest tabela pośrednia AppUserRole dodane zostały pozostałem Identity...
         public ApplicationDbContext(DbContextOptions options) : base(options)
         {
         }
@@ -13,10 +15,24 @@ namespace Infrastructure.Data
         public DbSet<Asset> Assets { get; set; }
         public DbSet<AssetLike> Likes { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<Connection> Connections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AppUser>()
+                .HasMany(u => u.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(u => u.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<AppRole>()
+              .HasMany(u => u.UserRoles)
+              .WithOne(u => u.Role)
+              .HasForeignKey(u => u.RoleId)
+              .IsRequired();
 
             modelBuilder.Entity<Asset>()
                 .Property(u => u.IsReceipt)

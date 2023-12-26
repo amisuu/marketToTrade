@@ -37,7 +37,7 @@ namespace Infrastructure.Repository
         {
             return await _context.Users
                     .Include(p => p.Photos)
-                    .SingleOrDefaultAsync(u => u.Username == username);
+                    .SingleOrDefaultAsync(u => u.UserName == username);
         }
 
         public async Task<AppUser> Add(AppUser user)
@@ -50,7 +50,7 @@ namespace Infrastructure.Repository
 
         public async Task<bool> IsExists(string username)
         {
-            return await _context.Users.AnyAsync(x => x.Username == username.ToLower());
+            return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
 
         public async Task<bool> SaveAllAsync()
@@ -60,7 +60,7 @@ namespace Infrastructure.Repository
 
         public async Task<PagedList<MemberDto>> GetMembers(UserParams userParams)
         {
-            var query = _context.Users.Where(x => x.Username != userParams.CurrentUsername)
+            var query = _context.Users.Where(x => x.UserName != userParams.CurrentUsername)
                                       .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                                       .AsNoTracking();
 
@@ -81,7 +81,7 @@ namespace Infrastructure.Repository
         public async Task<MemberDto> GetMemberByUsername(string username)
         {
             return await _context.Users
-                            .Where(u => u.Username == username)
+                            .Where(u => u.UserName == username)
                             .ProjectTo<MemberDto>(_mapper.ConfigurationProvider)
                             .SingleOrDefaultAsync();
         }

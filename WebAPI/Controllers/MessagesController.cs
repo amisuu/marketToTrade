@@ -1,7 +1,6 @@
 ﻿using Application;
 using Application.DTOs;
 using Application.Extensions;
-using Application.Helpers;
 using Application.Interfaces;
 using Domain.Helpers;
 using Microsoft.AspNetCore.Mvc;
@@ -62,10 +61,10 @@ namespace WebAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(int id)
         {
-            var username = "wujek";// User.GetUsername();
+            var username = User.GetUsername();
 
             var message = await _messagesService.GetMessage(id);
-            
+
             if (message.SenderUserName != username && message.ReceipientUserName != username)
                 return Unauthorized();
 
@@ -74,7 +73,7 @@ namespace WebAPI.Controllers
             if (await _messagesService.SaveAllAsync())
                 return Ok();
 
-            return BadRequest("System cannot delete this message.");
+            return BadRequest("Cannot delete this message.");
         }
     }
 }

@@ -35,6 +35,13 @@ import {MatLegacySelectModule as MatSelectModule} from '@angular/material/legacy
 import { CommonModule } from '@angular/common';
 import { PhotoEditorMemberComponent } from './members/photo-editor-member/photo-editor-member.component';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
+import { AdminPanelComponent } from './admin-panel/admin-panel.component';
+import { HasRoleDirective } from './_directives/has-role.directive';
+import { UserConfigComponent } from './admin/user-config/user-config.component';
+import { PhotoConfigComponent } from './admin/photo-config/photo-config.component';
+import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
+import { routeStrategy } from './_services/routeStrategy';
+import { RouteReuseStrategy } from '@angular/router';
 
 
 @NgModule({
@@ -61,7 +68,12 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     AssetsAddComponent,
     YesNoSelectComponent,
     PhotoEditorMemberComponent,
-    MemberMessagesComponent
+    MemberMessagesComponent,
+    AdminPanelComponent,
+    HasRoleDirective,
+    UserConfigComponent,
+    PhotoConfigComponent,
+    RolesModalComponent
   ],
   imports: [
     BrowserModule,
@@ -79,6 +91,7 @@ import { MemberMessagesComponent } from './members/member-messages/member-messag
     {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
     {provide: HTTP_INTERCEPTORS, useClass: LoadingInterceptor, multi: true},
+    {provide: RouteReuseStrategy, useClass: routeStrategy}
   ],
   bootstrap: [AppComponent]
 })

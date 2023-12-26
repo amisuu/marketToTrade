@@ -5,7 +5,6 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Helpers;
 using Domain.Interfaces;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Services
 {
@@ -14,20 +13,21 @@ namespace Application.Services
         private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        private readonly ILogger<MessagesController> _logger;
 
         public MessagesService(IMessageRepository messageRepository,
                                IMapper mapper,
-                               IUserRepository userRepository,
-                               ILogger<MessagesController> logger)
+                               IUserRepository userRepository)
         {
             _messageRepository = messageRepository;
             _mapper = mapper;
             _userRepository = userRepository;
-            _logger = logger;
         }
 
-        public ILogger<MessagesController> Logger { get; }
+
+        public void AddGroup(Group group)
+        {
+            _messageRepository.AddGroup(group);
+        }
 
         public async Task<MessageDto> AddMessage(string userName, CreateMessageDto createMessageDto)
         {
@@ -41,8 +41,8 @@ namespace Application.Services
             {
                 Sender = sender,
                 Receipient = recipient,
-                SenderUserName = sender.Username,
-                ReceipientUserName = recipient.Username,
+                SenderUserName = sender.UserName,
+                ReceipientUserName = recipient.UserName,
                 Content = createMessageDto.Content
             };
 
@@ -54,9 +54,19 @@ namespace Application.Services
             return null;
         }
 
-        public async void DeleteMessage(int id, string username)//MessageDto messageDto)
+        public void DeleteMessage(int id, string username)//MessageDto messageDto)
         {
             _messageRepository.DeleteMessage(id);
+        }
+
+        public async Task<Connection> GetConnection(string connectionId)
+        {
+            return await _messageRepository.GetConnection(connectionId);
+        }
+
+        public async Task<Group> GetGroupForConnection(string connectionId)
+        {
+            return await _messageRepository.GetGroupForConnection(connectionId);
         }
 
         public async Task<MessageDto> GetMessage(int id)
@@ -64,6 +74,11 @@ namespace Application.Services
             var message = await _messageRepository.GetMessage(id);
 
             return _mapper.Map<MessageDto>(message);
+        }
+
+        public async Task<Group> GetMessageGroup(string groupName)
+        {
+            return await _messageRepository.GetMessageGroup(groupName);
         }
 
         public async Task<PagedList<MessageDto>> GetMessagesByUser(MessagesParams messagesParams)
@@ -82,13 +97,14 @@ namespace Application.Services
             return _mapper.Map<IEnumerable<MessageDto>>(messages);
         }
 
+        public void RemoveConnection(Connection connection)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<bool> SaveAllAsync()
         {
             return await _messageRepository.SaveAllAsync();
         }
-    }
-
-    public class MessagesController
-    {
     }
 }

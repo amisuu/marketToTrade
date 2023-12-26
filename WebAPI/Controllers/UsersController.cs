@@ -2,7 +2,6 @@
 using Application.DTOs;
 using Application.Extensions;
 using Application.Interfaces;
-using Domain.Entities;
 using Domain.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,24 +12,21 @@ namespace WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly IMemberRepository _memberRepository;
         private readonly IPhotoService _photoService;
-        private readonly ILogger<UsersController> _logger;
 
         public UsersController(IUserService userService,
                                IMemberRepository memberRepository,
-                               IPhotoService photoService,
-                               ILogger<UsersController> logger)
+                               IPhotoService photoService)
         {
             _userService = userService;
             _memberRepository = memberRepository;
             _photoService = photoService;
-            _logger = logger;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
         {
             var user = await _userService.GetUserByUsername(User.GetUsername());
-            userParams.CurrentUsername = user.Username;
+            userParams.CurrentUsername = user.UserName;
             userParams.KnownAs = user.KnownAs;
 
             var users = await _userService.GetMembers(userParams);
@@ -67,8 +63,10 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
             var currentUser = User.GetUsername();
-            //var user = await _userService.GetUserByUsername(currentUser);
-            var user = new AppUserDto { Username = "inwestor123" };
+            var user = await _userService.GetUserByUsername(currentUser);
+
+            var userDto = new AppUserDto { Username = user.UserName };
+
             if (user == null)
                 return NotFound();
 
@@ -77,15 +75,15 @@ namespace WebAPI.Controllers
             if (result.Error != null)
                 return BadRequest(result.Error.Message);
 
-            var photoDto = await _photoService.GetNewPhotoResult(result, user, null);
+            var photoDto = await _photoService.GetNewPhotoResult(result, userDto, null);
 
             if (await _userService.SaveAllAsync())
             {
                 //return photoDto;
-                return CreatedAtAction(nameof(GetUserByUsername), new {username = user.Username}, photoDto);
+                return CreatedAtAction(nameof(GetUserByUsername), new { username = userDto.Username }, photoDto);
             }
 
-            return BadRequest("Problem adding photo");
+            return BadRequest("Problem with adding photo.");
         }
 
         [HttpDelete("delete-photo/{photoId}")]
@@ -98,7 +96,7 @@ namespace WebAPI.Controllers
                 return NoContent();
 
             var photo = user.Photos.FirstOrDefault(u => u.Id == photoId);
-            _logger.LogInformation("PHOTO ID ============================================= " + photo.Id.ToString());
+
             if (photo == null)
                 return NotFound();
 
@@ -117,13 +115,10 @@ namespace WebAPI.Controllers
             }
             //await _userService.SaveAllAsync();
             //return Ok();
-           // _logger.LogInformation(photo.PublicId.ToString());
             if (await _userService.SaveAllAsync())
                 return Ok();
 
             return BadRequest();
-           ////_logger.LogInformation("nie zapisało");
-            //return BadRequest("Problem with delete photo.");
         }
     }
 }

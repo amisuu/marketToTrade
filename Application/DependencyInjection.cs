@@ -1,6 +1,7 @@
 ﻿using Application.Helpers;
 using Application.Interfaces;
 using Application.Services;
+using Application.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,6 +20,10 @@ namespace Application
             services.AddScoped<ILikesService, LikesService>();
             services.AddScoped<IMessagesService, MessagesService>();
             services.AddScoped<LogUserActivity>();
+
+            services.AddSignalR();
+
+            services.AddSingleton<PresenceTrack>();
 
             services.AddAutoMapper(typeof(MapperConfig).Assembly);
 

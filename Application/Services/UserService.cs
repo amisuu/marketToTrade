@@ -4,8 +4,6 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Helpers;
 using Domain.Interfaces;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace Application.Services
 {
@@ -22,52 +20,6 @@ namespace Application.Services
             _mapper = mapper;
             _memberRepository = memberRepository;
             _tokenService = tokenService;
-        }
-
-        public async Task<UserDto> RegisterUser(RegisterDto registerDto)
-        {
-            var user = await GetUserByUsername(registerDto.Username);
-
-            using var hmac = new HMACSHA256();
-
-            user.Username = registerDto.Username.ToLower();
-            user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password));
-            user.PasswordSalt = hmac.Key;
-
-            await _userRepository.Add(user);
-
-            return new UserDto
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Token = _tokenService.CreateToken(user),
-                KnownAs = user.KnownAs,
-            };
-        }
-
-        public async Task<UserDto> LoginUser(LoginDto loginDto)
-        {
-            var user = await GetUserByUsername(loginDto.Username);
-
-            using var hmac = new HMACSHA256(user.PasswordSalt);
-
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != user.PasswordHash[i])
-                {
-                    return null;
-                }
-            }
-
-            return new UserDto
-            {
-                Id = user.Id,
-                Username = user.Username,
-                Token = _tokenService.CreateToken(user),
-                KnownAs = user.KnownAs,
-            };
         }
 
         public async Task<IEnumerable<MemberDto>> GetAllUsers()
@@ -142,6 +94,11 @@ namespace Application.Services
                 return true;
 
             return false;
+        }
+
+        public AppUser RegisterUser(RegisterDto registerDto)
+        {
+            return _mapper.Map<AppUser>(registerDto);
         }
     }
 }

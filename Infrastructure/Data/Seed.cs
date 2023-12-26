@@ -1,46 +1,71 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
-using System.Text;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using System.Security.Cryptography;
 
 namespace Infrastructure.Data
 {
     public class Seed
     {
-        public static async Task SeedUsers(ApplicationDbContext context)
+        private readonly IConfiguration _config;
+
+        public Seed(IConfiguration config)
         {
-            if (await context.Users.AnyAsync())
+            _config = config;
+        }
+
+        public async Task SeedUsers(UserManager<AppUser> userManager, RoleManager<AppRole> roleManager)
+        {
+            if (await userManager.Users.AnyAsync())
             {
                 return;
             }
 
-            var userData = await File.ReadAllTextAsync("D:\\Projekty\\marketToTrade\\Infrastructure\\Data\\UsersDataSeed.json");//Environment.GetEnvironmentVariable("Users_Seed_Address"));
-            
+            var userData = await File.ReadAllTextAsync(_config.GetValue<string>("Secret:Users_Seed_Address"));
+
             var users = JsonConvert.DeserializeObject<List<AppUser>>(userData);
+
+            var roles = new List<AppRole>()
+            {
+                new AppRole { Name = "Admin"},
+                new AppRole { Name = "Moderator"},
+                new AppRole { Name = "Member"}
+            };
+
+            foreach (var role in roles)
+            {
+                await roleManager.CreateAsync(role);
+            }
 
             foreach (var user in users)
             {
                 using var hmac = new HMACSHA256();
 
-                user.Username = user.Username.ToLower();
-                user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("Qwerty123"));//Environment.GetEnvironmentVariable("Password_User")));
-                user.PasswordSalt = hmac.Key;
+                user.UserName = user.UserName.ToLower();
 
-                context.Users.Add(user);
+                await userManager.CreateAsync(user, _config.GetValue<string>("Secret:PassEntry"));
+                await userManager.AddToRoleAsync(user, "Member");
             }
 
-            await context.SaveChangesAsync();
+            var adminUser = new AppUser
+            {
+                UserName = _config.GetValue<string>("Secret:Admin_Login")
+            };
+
+            await userManager.CreateAsync(adminUser, _config.GetValue<string>("Secret:PassEntry"));
+            await userManager.AddToRolesAsync(adminUser, new[] { "Admin", "Moderator" });
         }
 
-        public static async Task SeedAssets(ApplicationDbContext context)
+        public async Task SeedAssets(ApplicationDbContext context)
         {
             if (await context.Assets.AnyAsync())
             {
                 return;
             }
 
-            var assetData = await File.ReadAllTextAsync("D:\\Projekty\\marketToTrade\\Infrastructure\\Data\\AssetSeed.json");//Environment.GetEnvironmentVariable("Assets_Seed_Address"));
+            var assetData = await File.ReadAllTextAsync(_config.GetValue<string>("Secret:Assets_Seed_Address"));
 
             var assets = JsonConvert.DeserializeObject<List<Asset>>(assetData);
 
