@@ -17,10 +17,10 @@ namespace Application.Helpers
             }
 
             var userId = resultContext.HttpContext.User.GetUserId();
-            var repository = resultContext.HttpContext.RequestServices.GetService<IUserRepository>();
-            var user = await repository.GetUserById(userId);
+            var unitOfWork = resultContext.HttpContext.RequestServices.GetService<IUnitOfWork>();
+            var user = await unitOfWork.UserRepository.GetUserById(userId);
             user.LastActive = DateTime.Now;
-            await repository.SaveAllAsync();
+            await unitOfWork.Complete();
         }
     }
 }

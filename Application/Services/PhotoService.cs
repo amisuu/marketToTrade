@@ -16,14 +16,12 @@ namespace Application.Services
     {
         public readonly Cloudinary _cloudinary;
         private readonly IMapper _mapper;
-        private readonly IAssetRepository _assetRepository;
-        private readonly IAssetService _assetService;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly ILogger<PhotoService> _logger;
 
         public PhotoService(IOptions<CloudinarySettings> config,
                             IMapper mapper,
-                            IAssetRepository assetRepository,
-                            IAssetService assetService,
+                            IUnitOfWork unitOfWork,
                             ILogger<PhotoService> logger)
         {
             var account = new Account
@@ -35,8 +33,7 @@ namespace Application.Services
 
             _cloudinary = new Cloudinary(account);
             _mapper = mapper;
-            _assetRepository = assetRepository;
-            _assetService = assetService;
+            _unitOfWork = unitOfWork;
             _logger = logger;
         }
         public async Task<ImageUploadResult> AddPhotoAsync(IFormFile file)
@@ -60,7 +57,7 @@ namespace Application.Services
         public async Task<DeletionResult> DeletePhotoAsync(PhotoDto photoDto, AppUserDto userDto)
         {
             var deleteParams = new DeletionParams(photoDto.PublicId);
-            
+
             userDto.Photos.Remove(photoDto);
 
             return await _cloudinary.DestroyAsync(deleteParams);
@@ -74,27 +71,29 @@ namespace Application.Services
             return await _cloudinary.DestroyAsync(deleteParams);
         }
 
-        public async Task<PhotoDto> GetNewPhotoResult(ImageUploadResult result, AppUserDto user, AssetDto assetDto)
+        public async Task<PhotoDto> GetNewPhotoResult(ImageUploadResult result, string username, AssetDto assetDto)
         {
             var photoDto = new PhotoDto
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId,
             };
-
-            if (user != null)
+            
+            if (username != null)
             {
+                var user = await _unitOfWork.UserRepository.GetUserByUsername(username);
+
                 if (user.Photos.Count == 0)
                     photoDto.IsMain = true;
 
-                user.Photos.Add(photoDto);
+                user.Photos.Add(_mapper.Map<Photo>(photoDto));
             }
             else if (assetDto != null)
             {
                 if (assetDto.Photos.Count == 0)
                     photoDto.IsMain = true;
 
-                var asset = await _assetRepository.GetAssetById(assetDto.Id);
+                var asset = await _unitOfWork.AssetRepository.GetAssetById(assetDto.Id);
                 asset.Photos.Add(_mapper.Map<Photo>(photoDto));
             }
 

@@ -53,11 +53,6 @@ namespace Infrastructure.Repository
             return await _context.Users.AnyAsync(x => x.UserName == username.ToLower());
         }
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
-
         public async Task<PagedList<MemberDto>> GetMembers(UserParams userParams)
         {
             var query = _context.Users.Where(x => x.UserName != userParams.CurrentUsername)

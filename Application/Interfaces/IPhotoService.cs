@@ -11,6 +11,6 @@ namespace Application.Interfaces
         Task<DeletionResult> DeletePhotoAsync(PhotoDto photoDto, AppUserDto userDto);
 
         Task<DeletionResult> DeletePhotoAsync2(string publicId);
-        Task<PhotoDto> GetNewPhotoResult(ImageUploadResult result, AppUserDto user, AssetDto assetDto);
+        Task<PhotoDto> GetNewPhotoResult(ImageUploadResult result, string username, AssetDto assetDto);
     }
 }

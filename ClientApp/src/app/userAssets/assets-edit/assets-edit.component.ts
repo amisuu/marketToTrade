@@ -44,9 +44,11 @@ export class AssetsEditComponent implements OnInit {
   }
 
   loadAssets() {
+    console.log(this.user.id);
     this.assetService.getAssets(this.assetParams).subscribe(asset => {
       asset.result.forEach(element => {
         if (element.appUserId == this.user.id) {
+          console.log("elemtn - " + element);
           this.userAsset.push(element);
         }
       });

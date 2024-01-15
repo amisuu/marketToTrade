@@ -42,6 +42,7 @@ import { PhotoConfigComponent } from './admin/photo-config/photo-config.componen
 import { RolesModalComponent } from './modals/roles-modal/roles-modal.component';
 import { routeStrategy } from './_services/routeStrategy';
 import { RouteReuseStrategy } from '@angular/router';
+import { ConfirmPopupComponent } from './modals/confirm-popup/confirm-popup.component';
 
 
 @NgModule({
@@ -73,7 +74,8 @@ import { RouteReuseStrategy } from '@angular/router';
     HasRoleDirective,
     UserConfigComponent,
     PhotoConfigComponent,
-    RolesModalComponent
+    RolesModalComponent,
+    ConfirmPopupComponent
   ],
   imports: [
     BrowserModule,

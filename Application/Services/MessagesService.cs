@@ -5,34 +5,31 @@ using AutoMapper.QueryableExtensions;
 using Domain.Entities;
 using Domain.Helpers;
 using Domain.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
     public class MessagesService : IMessagesService
     {
-        private readonly IMessageRepository _messageRepository;
         private readonly IMapper _mapper;
-        private readonly IUserRepository _userRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public MessagesService(IMessageRepository messageRepository,
-                               IMapper mapper,
-                               IUserRepository userRepository)
+        public MessagesService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _messageRepository = messageRepository;
             _mapper = mapper;
-            _userRepository = userRepository;
+            _unitOfWork = unitOfWork;
         }
 
 
         public void AddGroup(Group group)
         {
-            _messageRepository.AddGroup(group);
+            _unitOfWork.MessageRepository.AddGroup(group);
         }
 
         public async Task<MessageDto> AddMessage(string userName, CreateMessageDto createMessageDto)
         {
-            var sender = await _userRepository.GetUserByUsername(userName);
-            var recipient = await _userRepository.GetUserByUsername(createMessageDto.RecipientUserName);
+            var sender = await _unitOfWork.UserRepository.GetUserByUsername(userName);
+            var recipient = await _unitOfWork.UserRepository.GetUserByUsername(createMessageDto.RecipientUserName);
 
             if (recipient == null)
                 return null;
@@ -46,9 +43,9 @@ namespace Application.Services
                 Content = createMessageDto.Content
             };
 
-            await _messageRepository.AddMessage(message);
+            await _unitOfWork.MessageRepository.AddMessage(message);
 
-            if (await _messageRepository.SaveAllAsync())
+            if (await _unitOfWork.Complete())
                 return _mapper.Map<MessageDto>(message);
 
             return null;
@@ -56,55 +53,64 @@ namespace Application.Services
 
         public void DeleteMessage(int id, string username)//MessageDto messageDto)
         {
-            _messageRepository.DeleteMessage(id);
+            _unitOfWork.MessageRepository.DeleteMessage(id);
         }
 
         public async Task<Connection> GetConnection(string connectionId)
         {
-            return await _messageRepository.GetConnection(connectionId);
+            return await _unitOfWork.MessageRepository.GetConnection(connectionId);
         }
 
         public async Task<Group> GetGroupForConnection(string connectionId)
         {
-            return await _messageRepository.GetGroupForConnection(connectionId);
+            return await _unitOfWork.MessageRepository.GetGroupForConnection(connectionId);
         }
 
         public async Task<MessageDto> GetMessage(int id)
         {
-            var message = await _messageRepository.GetMessage(id);
+            var message = await _unitOfWork.MessageRepository.GetMessage(id);
 
             return _mapper.Map<MessageDto>(message);
         }
 
         public async Task<Group> GetMessageGroup(string groupName)
         {
-            return await _messageRepository.GetMessageGroup(groupName);
+            return await _unitOfWork.MessageRepository.GetMessageGroup(groupName);
         }
 
         public async Task<PagedList<MessageDto>> GetMessagesByUser(MessagesParams messagesParams)
         {
-            var query = _messageRepository.GetMessagesForUser(messagesParams);
-
-            var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
+            var messages = _unitOfWork.MessageRepository.GetMessagesForUser(messagesParams)
+                                                        .OrderByDescending(m => m.DateMessageSent)
+                                                        .ProjectTo<MessageDto>(_mapper.ConfigurationProvider);                                                   
 
             return await PagedList<MessageDto>.CreateAsync(messages, messagesParams.PageNumber, messagesParams.PageSize);
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUserName, string recipientUserName)
         {
-            var messages = await _messageRepository.GetMessageThread(currentUserName, recipientUserName);
+            var messages = await _unitOfWork.MessageRepository.GetMessageThread(currentUserName, recipientUserName)
+                                                           .Where(m => m.ReceipientUserName == currentUserName &&
+                                                                  m.ReceipientDeleted == false &&
+                                                                  m.SenderUserName == recipientUserName ||
+                                                                  m.ReceipientUserName == recipientUserName &&
+                                                                  m.SenderDeleted == false &&
+                                                                  m.SenderUserName == currentUserName)
+                                                           .OrderBy(m => m.DateMessageSent)
+                                                           .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
+                                                           .ToListAsync();
 
             return _mapper.Map<IEnumerable<MessageDto>>(messages);
         }
 
         public void RemoveConnection(Connection connection)
         {
-            throw new NotImplementedException();
+            _unitOfWork.MessageRepository.RemoveConnection(connection);
         }
 
         public async Task<bool> SaveAllAsync()
         {
-            return await _messageRepository.SaveAllAsync();
+            return await _unitOfWork.Complete();
         }
     }
 }

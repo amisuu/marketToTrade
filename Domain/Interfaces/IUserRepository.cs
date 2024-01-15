@@ -9,7 +9,6 @@ namespace Domain.Interfaces
         Task<AppUser> GetUserByUsername(string username);
         Task<AppUser> Add(AppUser user);
         Task<bool> IsExists(string username);
-        Task<bool> SaveAllAsync();
         void Update(AppUser user);
     }
 }

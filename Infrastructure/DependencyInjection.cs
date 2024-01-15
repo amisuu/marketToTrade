@@ -9,13 +9,14 @@ namespace Domain
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services)
         {
-            services.AddScoped<IUserRepository, UserRepository>();
+            //services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IErrorRepository, ErrorRepository>();
             services.AddScoped<IMemberRepository, UserRepository>();
-            services.AddScoped<IAssetRepository, AssetRepository>();
-            services.AddScoped<ILikesRepository, LikesRepository>();
+            //services.AddScoped<IAssetRepository, AssetRepository>();
+            //services.AddScoped<ILikesRepository, LikesRepository>();
             services.AddScoped<IPagedListRepository, AssetRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
+            //services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

@@ -2,31 +2,29 @@
 using Application.Interfaces;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Helpers;
 using Domain.Interfaces;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
 {
     public class LikesService : ILikesService
     {
-        private readonly ILikesRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public LikesService(ILikesRepository repository, IMapper mapper)
+        public LikesService(IMapper mapper, IUnitOfWork unitOfWork)
         {
-            _repository = repository;
             _mapper = mapper;
+            _unitOfWork = unitOfWork;
         }
         public async Task<AssetLikeDto> GetAssetLike(int sourceAssetId, int likedAssetId)
         {
-            var asset = await _repository.GetAssetLike(sourceAssetId, likedAssetId);
+            var asset = await _unitOfWork.LikesRepository.GetAssetLike(sourceAssetId, likedAssetId);
             return _mapper.Map<AssetLikeDto>(asset);
         }
 
         public async Task<IEnumerable<AssetDto>> GetAssetLikes(string predicate, int userId)
         {
-            var assets = await _repository.GetAssetLikes(predicate, userId);
+            var assets = await _unitOfWork.LikesRepository.GetAssetLikes(predicate, userId);
 
             var likedAssets = assets.Select(asset => new AssetDto
             {
@@ -42,7 +40,7 @@ namespace Application.Services
 
         public async Task<IEnumerable<UserDto>> GetUserWithLike(string predicate, int userId)
         {
-            var users = await _repository.GetUserWithLike(predicate, userId);
+            var users = await _unitOfWork.LikesRepository.GetUserWithLike(predicate, userId);
 
             var likedUsers = users.Select(user => new UserDto
             {
@@ -57,7 +55,7 @@ namespace Application.Services
 
         public async Task<AppUser> GetUserWithLikes(int userId)
         {
-            var user = await _repository.GetUserWithLikes(userId);
+            var user = await _unitOfWork.LikesRepository.GetUserWithLikes(userId);
             return _mapper.Map<AppUser>(user);
         }
 
@@ -65,6 +63,11 @@ namespace Application.Services
         {
             var user = await GetUserWithLikes(userId);
             user.LikedAssets.Add(_mapper.Map<AssetLike>(assetLikeDto));
+        }
+
+        public async Task<bool> SaveAllAsync()
+        {
+            return await _unitOfWork.Complete();
         }
     }
 }

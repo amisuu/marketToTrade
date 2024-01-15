@@ -13,8 +13,7 @@ namespace Domain.Interfaces
         Task<Message> GetMessage(int id);
         IQueryable<Message> GetMessagesForUser(MessagesParams messagesParams);
         Task<Group> GetMessageGroup(string groupName);
-        Task<IEnumerable<Message>> GetMessageThread(string currentUserName, string recipientUserName);
+        IQueryable<Message> GetMessageThread(string currentUserName, string recipientUserName);
         void RemoveConnection(Connection connection);
-        Task<bool> SaveAllAsync();
     }
 }

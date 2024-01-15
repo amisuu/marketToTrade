@@ -12,14 +12,17 @@ namespace WebAPI.Controllers
         private readonly IUserService _userService;
         private readonly IMemberRepository _memberRepository;
         private readonly IPhotoService _photoService;
+        private readonly ILogger<UsersController> _logger;
 
         public UsersController(IUserService userService,
                                IMemberRepository memberRepository,
-                               IPhotoService photoService)
+                               IPhotoService photoService,
+                               ILogger<UsersController> logger)
         {
             _userService = userService;
             _memberRepository = memberRepository;
             _photoService = photoService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -63,11 +66,8 @@ namespace WebAPI.Controllers
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
             var currentUser = User.GetUsername();
-            var user = await _userService.GetUserByUsername(currentUser);
 
-            var userDto = new AppUserDto { Username = user.UserName };
-
-            if (user == null)
+            if (currentUser == null)
                 return NotFound();
 
             var result = await _photoService.AddPhotoAsync(file);
@@ -75,12 +75,12 @@ namespace WebAPI.Controllers
             if (result.Error != null)
                 return BadRequest(result.Error.Message);
 
-            var photoDto = await _photoService.GetNewPhotoResult(result, userDto, null);
+            var photoDto = await _photoService.GetNewPhotoResult(result, currentUser, null);
 
             if (await _userService.SaveAllAsync())
             {
                 //return photoDto;
-                return CreatedAtAction(nameof(GetUserByUsername), new { username = userDto.Username }, photoDto);
+                return CreatedAtAction(nameof(GetUserByUsername), new { username = currentUser }, photoDto);
             }
 
             return BadRequest("Problem with adding photo.");

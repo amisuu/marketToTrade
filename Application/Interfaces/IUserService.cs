@@ -12,10 +12,10 @@ namespace Application
         Task<AppUser> GetUserByUsername2(string username);
         Task<AppUser> AddUser(AppUserDto user);
         Task<bool> IsUserExists(string username);
-        Task<bool> SaveAllAsync();
         Task<bool> UpdateCurrentUser(UpdateMemberDto memberDto, string currentUser);
         AppUser MapDtoToEntity(RegisterDto registerDto);
         Task<PagedList<MemberDto>> GetMembers(UserParams userParams);
         AppUser RegisterUser(RegisterDto registerDto);
+        Task<bool> SaveAllAsync();
     }
 }

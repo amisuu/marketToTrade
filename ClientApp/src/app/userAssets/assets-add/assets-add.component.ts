@@ -40,8 +40,16 @@ export class AssetsAddComponent implements OnInit {
   }
 
   onSubmit(assetFromForm: any) {
-    this.assetService.addAsset(assetFromForm.value).subscribe(() => {
-      next: () => {this.router.navigateByUrl('/assets')}
+    this.assetService.addAsset(assetFromForm.value).subscribe({
+      next: _ => {
+        this.router.navigateByUrl('/assets').then(() => {
+          window.location.reload();
+        });
+      }
     });
+  }
+
+  onCancel() {
+    this.router.navigateByUrl('/assets');
   }
 }

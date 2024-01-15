@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { FileUploader } from 'ng2-file-upload';
-import { take } from 'rxjs';
 import { Member } from 'src/app/_models/member';
 import { User } from 'src/app/_models/user';
 import { AccountService } from 'src/app/_services/account.service';
@@ -47,7 +46,7 @@ export class PhotoEditorMemberComponent implements OnInit {
       allowedFileType: ['image'],
       removeAfterUpload: true,
       autoUpload: false,
-      maxFileSize: 10 * 1024 * 1024,
+      maxFileSize: 10 * 1024 * 1024
     });
     
     this.uploader.onAfterAddingFile = (file) => {

@@ -1,10 +1,8 @@
-﻿using Application.Services;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Helpers;
 using Domain.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Infrastructure.Repository
 {
@@ -58,7 +56,7 @@ namespace Infrastructure.Repository
 
         public IQueryable<Message> GetMessagesForUser(MessagesParams messagesParams)
         {
-            var query = _context.Messages.OrderByDescending(m => m.DateMessageSent).AsQueryable();
+            var query = _context.Messages.AsQueryable();
 
             query = messagesParams.Container switch
             {
@@ -66,7 +64,7 @@ namespace Infrastructure.Repository
                                        m.ReceipientDeleted == false),
                 "Outbox" => query.Where(m => m.SenderUserName == messagesParams.UserName &&
                                         m.SenderDeleted == false),
-                _ => query.Where(m => m.ReceipientUserName == messagesParams.UserName && 
+                _ => query.Where(m => m.ReceipientUserName == messagesParams.UserName &&
                                  m.DateMessageRead == null &&
                                  m.ReceipientDeleted == false)
             };
@@ -74,22 +72,12 @@ namespace Infrastructure.Repository
             return query;
         }
 
-        public async Task<IEnumerable<Message>> GetMessageThread(string currentUserName, string recipientUserName)
+        public IQueryable<Message> GetMessageThread(string currentUserName, string recipientUserName)
         {
-            var messages = await _context.Messages.Include(m => m.Sender).ThenInclude(p => p.Photos)
-                                                  .Include(m => m.Receipient).ThenInclude(p => p.Photos)
-                                                  .Where(m => m.ReceipientUserName == currentUserName &&
-                                                         m.ReceipientDeleted == false &&
-                                                         m.SenderUserName == recipientUserName || 
-                                                         m.ReceipientUserName == recipientUserName &&
-                                                         m.SenderDeleted == false &&
-                                                         m.SenderUserName == currentUserName)
-                                                  .OrderBy(m => m.DateMessageSent)
-                                                  .ToListAsync();
+            var messages = _context.Messages.AsQueryable();
 
             var unreadMessages = messages.Where(m => m.DateMessageRead == null &&
-                                                m.ReceipientUserName == currentUserName)
-                                         .ToList();
+                                                m.ReceipientUserName == currentUserName).ToList();
 
             if (unreadMessages.Any())
             {
@@ -97,8 +85,6 @@ namespace Infrastructure.Repository
                 {
                     message.DateMessageRead = DateTime.UtcNow;
                 }
-
-                await _context.SaveChangesAsync();
             }
 
             return messages;
@@ -107,11 +93,6 @@ namespace Infrastructure.Repository
         public void RemoveConnection(Connection connection)
         {
             _context.Connections.Remove(connection);
-        }
-
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
         }
     }
 }

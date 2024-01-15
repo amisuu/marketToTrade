@@ -1,14 +1,42 @@
 <div class="container mt-5">
   <div *ngIf="!registerMode" style="text-align: center;">
     <h1>Trade your assets</h1>
-    <p class="lead">Come on in to view your advertsement ... you need to sign up</p>
+    <p class="lead">You can easily sell or buy your precious metals.<br>
+      Find new contacts with people with the same interesting.<br>
+      You are welcome here! 
+    </p>
+    <br>
+    <div class="row row-cols-1 row-cols-md-2 mb-3 text-center">
+      <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+          <div class="card-header py-3">
+            <h4 class="my-0 fw-normal">Buy</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">For free</h1>
+            <button type="button" (click)="moveToOffers()" class="w-100 btn btn-lg btn-outline-primary">Go to purchase offers</button>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card mb-4 rounded-3 shadow-sm">
+          <div class="card-header py-3">
+            <h4 class="my-0 fw-normal">Sell</h4>
+          </div>
+          <div class="card-body">
+            <h1 class="card-title pricing-card-title">For free</h1>
+            <button type="button" (click)="moveToOffers()" class="w-100 btn btn-lg btn-primary">Go to sale offers</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="text-center">
       <button (click)="registerToggle()" class="btn btn-primary btn-lg me-2">Register</button>
-      <button class="btn btn-info btn-lg">Learn More</button>
     </div>
   </div>
 
-  <div *ngIf="registerMode" class="container">
+  <div *ngIf="registerMode" class="container-register">
     <div class="row justify-content-center">
       <div class="col-4">
         <app-register (cancelRegister)="cancelRegisterMode($event)"></app-register>
@@ -16,3 +44,4 @@
     </div>
   </div>
 </div>
+<div class="container-background"></div>

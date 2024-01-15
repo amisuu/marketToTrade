@@ -22,9 +22,11 @@ namespace Application.Helpers
             CreateMap<Photo, PhotoDto>();
             CreateMap<PhotoDto, Photo>();
             CreateMap<AssetDto, Asset>();
+
             CreateMap<UpdateAssetDto, Asset>();
-            CreateMap<Asset, AddNewAssetDto>();
             CreateMap<AddNewAssetDto, Asset>();
+            CreateMap<Asset, AddNewAssetDto>();
+            
             CreateMap<AssetLike, AssetLikeDto>().ReverseMap();
             CreateMap<AppUserDto, AppUser>().ReverseMap();
             CreateMap<Asset, LikeDto>().ConstructUsing(x => new LikeDto());
